@@ -3,12 +3,12 @@
     public class Stack<T>
     {
         private Node? Root;
-        private int _Length;
-        public int Length
+        private int _count;
+        public int Count
         {
             get
             {
-                return _Length;
+                return _count;
             }
         }
 
@@ -23,14 +23,14 @@
         }
         public Stack()
         {
-            _Length = 0;
+            _count = 0;
             Root = null;
         }
 
         public void Push(T data)
         {
             Root = new Node(data, Root);
-            _Length++;
+            _count++;
         }
 
         public T Pop()
@@ -38,7 +38,7 @@
             if (Root is null) throw new Exception("Stack is Emtpy");
             T RData = Root.Data;
             Root = Root.Prev;
-            _Length--;
+            _count--;
             return RData;
         }
     }

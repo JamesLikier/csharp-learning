@@ -17,20 +17,20 @@ namespace datastructures_test
             stack.Push(1);
             stack.Push(2);
             stack.Push(3);
-            Assert.AreEqual(3, stack.Length);
+            Assert.AreEqual(3, stack.Count);
             Assert.AreEqual(3,stack.Pop());
             Assert.AreEqual(2,stack.Pop());
             Assert.AreEqual(1,stack.Pop());
-            Assert.AreEqual(0, stack.Length);
+            Assert.AreEqual(0, stack.Count);
         }
         [TestMethod]
         public void TestPush()
         {
             DS.Stack<int> stack = new();
             stack.Push(1);
-            Assert.AreEqual(1, stack.Length);
+            Assert.AreEqual(1, stack.Count);
             stack.Push(1);
-            Assert.AreEqual(2, stack.Length);
+            Assert.AreEqual(2, stack.Count);
         }
     }
 }
