@@ -2,37 +2,44 @@
 {
     public class Stack<T>
     {
-        private Node? root;
-        private int _length;
-        public int length
+        private Node? Root;
+        private int _Length;
+        public int Length
         {
             get
             {
-                return _length;
+                return _Length;
             }
         }
 
         private class Node {
-            public Node? prev;
-            public T? data;
-            public Node(T? data, Node? prev)
+            public Node? Prev;
+            public T Data;
+            public Node(T data, Node? prev)
             {
-                this.data = data;
-                this.prev = prev;
+                this.Data = data;
+                this.Prev = prev;
             }
         }
         public Stack()
         {
-            _length = 0;
-            root = null;
+            _Length = 0;
+            Root = null;
         }
 
-        public void push(T data)
+        public void Push(T data)
         {
-            if (root == null)
-            {
-                //todo
-            }
+            Root = new Node(data, Root);
+            _Length++;
+        }
+
+        public T Pop()
+        {
+            if (Root is null) throw new Exception("Stack is Emtpy");
+            T RData = Root.Data;
+            Root = Root.Prev;
+            _Length--;
+            return RData;
         }
     }
 }
