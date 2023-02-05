@@ -127,8 +127,9 @@ namespace datastructures
 
         private Node GetNode(int index)
         {
-            if (Root is null) throw new EmptyListException();
+            if (Root is null || Last is null) throw new EmptyListException();
             if (index > _count || index < 0) throw new IndexOutOfRangeException();
+            if (index == _count) return Last;
             Node cur = Root;
             int pos = 0;
             while (pos < index && cur.Next is not null)
