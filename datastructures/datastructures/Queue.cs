@@ -36,7 +36,7 @@
 
         public T Remove()
         {
-            if (Root is null) throw new Exception("Queue is Empty");
+            if (Root is null) throw new EmptyListException();
             Node n = Root;
             Root = Root.Next;
             n.Next= null;

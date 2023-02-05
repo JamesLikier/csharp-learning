@@ -1,4 +1,5 @@
-﻿using ds = datastructures;
+﻿using datastructures;
+using ds = datastructures;
 
 namespace datastructures_test
 {
@@ -24,7 +25,7 @@ namespace datastructures_test
         public void RemoveTest()
         {
             ds.Queue<int> q = new();
-            Assert.ThrowsException<Exception>(() => { q.Remove(); });
+            Assert.ThrowsException<EmptyListException>(() => { q.Remove(); });
             q.Add(1);
             q.Add(2);
             q.Add(3);
@@ -38,7 +39,7 @@ namespace datastructures_test
             Assert.AreEqual(1, q.Count);
             q.Remove();
             Assert.AreEqual(0, q.Count);
-            Assert.ThrowsException<Exception>(() => { q.Remove(); });
+            Assert.ThrowsException<EmptyListException>(() => { q.Remove(); });
         }
     }
 }

@@ -35,7 +35,7 @@
 
         public T Pop()
         {
-            if (Root is null) throw new Exception("Stack is Emtpy");
+            if (Root is null) throw new EmptyListException();
             T RData = Root.Data;
             Root = Root.Prev;
             _count--;

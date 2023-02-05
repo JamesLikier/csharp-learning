@@ -1,3 +1,4 @@
+using datastructures;
 using DS = datastructures;
 
 namespace datastructures_test
@@ -9,10 +10,10 @@ namespace datastructures_test
         public void TestPop()
         {
             DS.Stack<int> stack = new();
-            Assert.ThrowsException<Exception>(() => { stack.Pop(); });
+            Assert.ThrowsException<EmptyListException>(() => { stack.Pop(); });
             stack.Push(1);
             Assert.AreEqual(1, stack.Pop());
-            Assert.ThrowsException<Exception>(() => { stack.Pop(); });
+            Assert.ThrowsException<EmptyListException>(() => { stack.Pop(); });
 
             stack.Push(1);
             stack.Push(2);
