@@ -14,6 +14,16 @@ namespace datastructures
                 this.Data = data;
                 this.Prev = prev;
                 this.Next = next;
+
+                if (prev is not null) prev.Next = this;
+                if (next is not null) next.Prev = this;
+            }
+            public void Remove()
+            {
+                if (Prev is not null) Prev.Next = Next;
+                if (Next is not null) Next.Prev = Prev;
+                Prev = null;
+                Next = null;
             }
         }
         private Node? Root;
@@ -21,6 +31,12 @@ namespace datastructures
         private int _count;
         public int Count { get { return _count; } }
         public LinkedList()
+        {
+            Root = null;
+            Last = null;
+            _count = 0;
+        }
+        public void ClearList()
         {
             Root = null;
             Last = null;
@@ -36,64 +52,66 @@ namespace datastructures
             else
             {
                 Node n = new(data, Last, null);
-                if (Last is not null) Last.Next = n;
                 Last = n;
             }
             _count++;
         }
-        public void Insert(T data, int position)
+        public void Insert(T data, int index)
         {
-            if (position > _count) throw new IndexOutOfRangeException();
+            if (index > _count) throw new IndexOutOfRangeException();
             if (_count == 0)
             {
                 Root = new(data, null, null);
                 Last = Root;
             }
+            else if (index == _count)
+            {
+                new Node(data, Last, null);
+            }
             else
             {
-                Node? prev = null;
-                Node? cur = Root;
-
-                for (int i = 0; i < position && cur is not null; i++)
-                {
-                    prev = cur;
-                    cur = cur.Next;
-                }
-                Node n = new(data, prev, cur);
-                if (prev is not null) prev.Next = n;
-                if (cur is not null) cur.Prev = n;
+                Node insertBefore = GetNode(index);
+                new Node(data, insertBefore.Prev, insertBefore);
             }
             _count++;
         }
         public T Remove(T data)
         {
             if (_count == 0) throw new EmptyListException();
-            Node cur = FindNode(data);
-            Node? prev = cur.Prev;
-            Node? next = cur.Next;
-            if (prev is not null) prev.Next = next;
-            if (next is not null) next.Prev = prev;
-            cur.Next = null;
-            cur.Prev = null;
-            return cur.Data;
+            if (_count == 1)
+            {
+                Root?.Remove();
+                ClearList();
+                return data;
+            }
+            else
+            {
+                FindNode(data).Remove();
+                _count--;
+                return data;
+            }
             throw new NotFoundException();
         }
         public T RemoveAt(int index)
         {
-            if (index > _count) throw new IndexOutOfRangeException();
+            if (index > _count || index < 0) throw new IndexOutOfRangeException();
             if (Root is null) throw new EmptyListException();
-            Node cur = Root;
-            for (int i = 0; i < index && cur.Next is not null; i++)
+            if (_count == 1)
             {
-                cur = cur.Next;
+                T data = Root.Data;
+                Root?.Remove();
+                ClearList();
+                return data;
             }
-            Node? prev = cur.Prev;
-            Node? next = cur.Next;
-            if (prev is not null) prev.Next = next;
-            if (next is not null) next.Prev = prev;
-            cur.Next = null;
-            cur.Prev= null;
-            return cur.Data;
+            else
+            {
+                Node cur = GetNode(index);
+                T data = cur.Data;
+                cur.Remove();
+                _count--;
+                return cur.Data;
+            }
+            throw new NotFoundException();
         }
         public int FindPosition(T data)
         {
@@ -109,6 +127,19 @@ namespace datastructures
             throw new NotFoundException();
         }
 
+        private Node GetNode(int index)
+        {
+            if (Root is null) throw new EmptyListException();
+            if (index > _count || index < 0) throw new IndexOutOfRangeException();
+            Node cur = Root;
+            int pos = 0;
+            while (pos < index && cur.Next is not null)
+            {
+                cur = cur.Next;
+                pos++;
+            }
+            return cur!;
+        }
         private Node FindNode(T data)
         {
             if (Root is null) throw new EmptyListException();
