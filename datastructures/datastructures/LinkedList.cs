@@ -66,7 +66,12 @@ namespace datastructures
             }
             else if (index == _count)
             {
-                new Node(data, Last, null);
+                Node n = new Node(data, Last, null);
+                Last = n;
+            }
+            else if (index == 0)
+            {
+                Root = new(data, null, Root);
             }
             else
             {
@@ -78,40 +83,33 @@ namespace datastructures
         public T Remove(T data)
         {
             if (_count == 0) throw new EmptyListException();
+            Node n = FindNode(data);
+            n.Remove();
             if (_count == 1)
             {
-                Root?.Remove();
                 ClearList();
-                return data;
             }
             else
             {
-                FindNode(data).Remove();
                 _count--;
-                return data;
             }
-            throw new NotFoundException();
+            return n.Data;
         }
         public T RemoveAt(int index)
         {
             if (index > _count || index < 0) throw new IndexOutOfRangeException();
             if (Root is null) throw new EmptyListException();
+            Node n = GetNode(index);
+            n.Remove();
             if (_count == 1)
             {
-                T data = Root.Data;
-                Root?.Remove();
                 ClearList();
-                return data;
             }
             else
             {
-                Node cur = GetNode(index);
-                T data = cur.Data;
-                cur.Remove();
                 _count--;
-                return cur.Data;
             }
-            throw new NotFoundException();
+            return n.Data;
         }
         public int FindPosition(T data)
         {
