@@ -84,6 +84,7 @@ namespace datastructures
         {
             if (_count == 0) throw new EmptyListException();
             Node n = FindNode(data);
+            if (Last == n) Last = n.Prev;
             n.Remove();
             if (_count == 1)
             {
@@ -100,6 +101,7 @@ namespace datastructures
             if (index > _count || index < 0) throw new IndexOutOfRangeException();
             if (Root is null) throw new EmptyListException();
             Node n = GetNode(index);
+            if (Last == n) Last = n.Prev;
             n.Remove();
             if (_count == 1)
             {
@@ -108,6 +110,22 @@ namespace datastructures
             else
             {
                 _count--;
+            }
+            return n.Data;
+        }
+        public T Pop()
+        {
+            if (Last is null) throw new EmptyListException();
+            Node n = Last;
+            if (_count > 1)
+            {
+                Last = Last.Prev;
+                n.Remove();
+                _count--;
+            }
+            else
+            {
+                ClearList();
             }
             return n.Data;
         }
