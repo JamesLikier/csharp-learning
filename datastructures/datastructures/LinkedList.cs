@@ -62,17 +62,7 @@ namespace datastructures
         }
         public void Append(T data)
         {
-            if (Root is null)
-            {
-                Root = new(data, null, null);
-                Last = Root;
-            }
-            else
-            {
-                Node n = new(data, Last, null);
-                Last = n;
-            }
-            _count++;
+            Insert(data, _count);
         }
         public void Insert(T data, int index)
         {
