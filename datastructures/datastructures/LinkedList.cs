@@ -83,6 +83,7 @@ namespace datastructures
             if (_count == 0) throw new EmptyListException();
             Node n = FindNode(data);
             if (Last == n) Last = n.Prev;
+            if (Root == n) Root = n.Next;
             n.Remove();
             if (_count == 1)
             {
@@ -100,6 +101,7 @@ namespace datastructures
             if (index >= _count || index < 0) throw new IndexOutOfRangeException();
             Node n = GetNode(index);
             if (Last == n) Last = n.Prev;
+            if (Root == n) Root = n.Next;
             n.Remove();
             if (_count == 1)
             {
@@ -162,8 +164,22 @@ namespace datastructures
             while (cur is not null)
             {
                 if (cur.Data is not null && cur.Data.Equals(data)) return cur;
+                cur = cur.Next;
             }
             throw new NotFoundException();
+        }
+        public T[] ToArray()
+        {
+            if (Root is null) throw new EmptyListException();
+            Node cur = Root;
+            T[] result =  new T[_count];
+            for (int i = 0; i < _count && cur is not null; i++)
+            {
+                result[i] = cur.Data;
+                cur = cur.Next!;
+            }
+            return result;
+
         }
     }
 }
