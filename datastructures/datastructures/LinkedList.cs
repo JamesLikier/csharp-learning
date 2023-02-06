@@ -100,15 +100,15 @@ namespace datastructures
             if (Root is null) throw new EmptyListException();
             if (index >= _count || index < 0) throw new IndexOutOfRangeException();
             Node n = GetNode(index);
-            if (Last == n) Last = n.Prev;
-            if (Root == n) Root = n.Next;
-            n.Remove();
             if (_count == 1)
             {
                 ClearList();
             }
             else
             {
+                if (Last == n) Last = n.Prev;
+                if (Root == n) Root = n.Next;
+                n.Remove();
                 _count--;
             }
             return n.Data;
