@@ -22,8 +22,6 @@ namespace datastructures
             {
                 if (Prev is not null) Prev.Next = Next;
                 if (Next is not null) Next.Prev = Prev;
-                Prev = null;
-                Next = null;
             }
         }
         private Node? Root;
@@ -98,8 +96,8 @@ namespace datastructures
         }
         public T RemoveAt(int index)
         {
-            if (index > _count || index < 0) throw new IndexOutOfRangeException();
             if (Root is null) throw new EmptyListException();
+            if (index >= _count || index < 0) throw new IndexOutOfRangeException();
             Node n = GetNode(index);
             if (Last == n) Last = n.Prev;
             n.Remove();
