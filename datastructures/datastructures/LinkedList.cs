@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 
 namespace datastructures
 {
@@ -18,11 +19,6 @@ namespace datastructures
                 if (prev is not null) prev.Next = this;
                 if (next is not null) next.Prev = this;
             }
-            public void Remove()
-            {
-                if (Prev is not null) Prev.Next = Next;
-                if (Next is not null) Next.Prev = Prev;
-            }
         }
         private Node? Root;
         private Node? Last;
@@ -33,6 +29,30 @@ namespace datastructures
             Root = null;
             Last = null;
             _count = 0;
+        }
+        private void Remove(Node n)
+        {
+            if (_count == 1)
+            {
+                Root = null;
+                Last = null;
+            }
+            else if (Root == n)
+            {
+                Root = n.Next;
+            }
+            else if (Last == n)
+            {
+                Last = n.Prev;
+            }
+            else
+            {
+                Node? prev = n.Prev;
+                Node? next = n.Next;
+                if (prev is not null) prev.Next = next;
+                if (next is not null) next.Prev = prev;
+            }
+            _count--;
         }
         public void ClearList()
         {
@@ -82,17 +102,7 @@ namespace datastructures
         {
             if (_count == 0) throw new EmptyListException();
             Node n = FindNode(data);
-            if (Last == n) Last = n.Prev;
-            if (Root == n) Root = n.Next;
-            n.Remove();
-            if (_count == 1)
-            {
-                ClearList();
-            }
-            else
-            {
-                _count--;
-            }
+            Remove(n);
             return n.Data;
         }
         public T RemoveAt(int index)
@@ -100,33 +110,14 @@ namespace datastructures
             if (Root is null) throw new EmptyListException();
             if (index >= _count || index < 0) throw new IndexOutOfRangeException();
             Node n = GetNode(index);
-            if (_count == 1)
-            {
-                ClearList();
-            }
-            else
-            {
-                if (Last == n) Last = n.Prev;
-                if (Root == n) Root = n.Next;
-                n.Remove();
-                _count--;
-            }
+            Remove(n);
             return n.Data;
         }
         public T Pop()
         {
             if (Last is null) throw new EmptyListException();
             Node n = Last;
-            if (_count > 1)
-            {
-                Last = Last.Prev;
-                n.Remove();
-                _count--;
-            }
-            else
-            {
-                ClearList();
-            }
+            Remove(n);
             return n.Data;
         }
         public int FindPosition(T data)
