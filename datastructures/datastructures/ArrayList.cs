@@ -21,12 +21,17 @@ namespace datastructures
 
         public T[] ToArray()
         {
-            return Storage.ToArray();
+            T[] newArray = new T[_count];
+            for (int i = 0; i < _count; i++)
+            {
+                newArray[i] = Storage[i];
+            }
+            return newArray;
         }
 
         public void Insert(T data, int index)
         {
-            if (index > _count) throw new IndexOutOfRangeException();
+            if (index > _count && index != 0) throw new IndexOutOfRangeException();
             //need to resize array
             if (_count == Storage.Length)
             {
@@ -53,6 +58,7 @@ namespace datastructures
                         newStorage[i] = Storage[i - 1];
                     }    
                 }
+                Storage = newStorage;
             }
             //do not need to resize
             else
