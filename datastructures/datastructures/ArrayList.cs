@@ -20,15 +20,18 @@ namespace datastructures
 
         private T[] Resize()
         {
-            return new T[Storage.Length + SizeInc];
+        }
+        private T[] Resize(int emptySpotIndex)
+        {
+        }
+        private T[] CreateEmtpySpot(int index)
+        {
+            if (index >= _count) throw new IndexOutOfRangeException();
         }
 
         public void Insert(T data, int index)
         {
             if (index > _count) throw new IndexOutOfRangeException();
-            if (_count == Storage.Length) 
-            {
-            }
         }
     }
 }
