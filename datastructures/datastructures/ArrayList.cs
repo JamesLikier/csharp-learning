@@ -88,31 +88,32 @@ namespace datastructures
 
         public T Remove(T data)
         {
-            if (_count == 0) throw new EmptyListException();
-            for(int i = 0; i < _count; i++)
-            {
-                if (Storage[i] is { } d && d.Equals(data))
-                {
-                    RemoveAt(i);
-                    return data;
-                }
-            }
-            throw new NotFoundException();
+            RemoveAt(Find(data));
+            return data;
         }
 
         public void RemoveAt(int index)
         {
             if (_count == 0) throw new EmptyListException();
-            if (index >= _count) throw new IndexOutOfRangeException();
-            for(int i = index; i<_count; i++)
+            if (index >= _count || index < 0) throw new IndexOutOfRangeException();
+            //if index is not tail, move everything backwards
+            for(int i = index; i<(_count - 1); i++)
             {
-                //todo
+                Storage[i] = Storage[i+1];
             }
+            //remove tail
+            Storage[_count-1] = default(T);
+            _count--;
         }
 
         public int Find(T data)
         {
-            return 0;
+            if (_count == 0) throw new EmptyListException();
+            for(int i = 0; i < _count; i++)
+            {
+                if(Storage[i].Equals(data)) return i;
+            }
+            throw new NotFoundException();
         }
     }
 }
