@@ -8,7 +8,7 @@
         [TestMethod]
         public void ClearListTest()
         {
-            ds.ArrayList<int> l = new ds.ArrayList<int>();
+            ds.ArrayList<int> l = new();
             l.Insert(1, 0);
             l.ClearList();
             Assert.AreEqual(0, l.Count);
@@ -16,7 +16,7 @@
         [TestMethod]
         public void InsertTest()
         {
-            ds.ArrayList<int> l = new ds.ArrayList<int>();
+            ds.ArrayList<int> l = new();
             l.Insert(1, 0);
             Assert.AreEqual(true, l.ToArray() is [1]);
             l.Insert(2, 0);
@@ -31,8 +31,29 @@
                 l.Insert(1, i);
             }
             Assert.AreEqual(15, l.Count);
-            Assert.ThrowsException<IndexOutOfBoundsException>(()=>{l.Insert(1,-1);});
-            Assert.ThrowsException<IndexOutOfBoundsException>(()=>{l.Insert(1,l.Count+1);});
+            Assert.ThrowsException<IndexOutOfRangeException>(()=>{l.Insert(1,-1);});
+            Assert.ThrowsException<IndexOutOfRangeException>(()=>{l.Insert(1,l.Count+1);});
+        }
+        [TestMethod]
+        public void AppendTest()
+        {
+            ds.ArrayList<int> l = new();
+            l.Append(3);
+            l.Append(2);
+            l.Append(1);
+            Assert.AreEqual(true, l.ToArray() is [3, 2, 1]);
+        }
+        [TestMethod]
+        public void RemoveTest()
+        {
+            ds.ArrayList<int> l = new();
+            Assert.ThrowsException<EmptyListException>(() => l.Remove(1));
+            l.Append(1);
+            l.Append(2);
+            l.Append(3);
+            Assert.AreEqual(1, l.Remove(1));
+            Assert.ThrowsException<NotFoundException>(() => l.Remove(1));
+            Assert.AreEqual(true, l.ToArray() is [2, 3]);
         }
     }
 }

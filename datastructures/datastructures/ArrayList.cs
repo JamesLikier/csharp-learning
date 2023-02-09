@@ -86,16 +86,33 @@ namespace datastructures
             Insert(data, _count);
         }
 
-        public void Remove(T data)
+        public T Remove(T data)
         {
+            if (_count == 0) throw new EmptyListException();
+            for(int i = 0; i < _count; i++)
+            {
+                if (Storage[i] is { } d && d.Equals(data))
+                {
+                    RemoveAt(i);
+                    return data;
+                }
+            }
+            throw new NotFoundException();
         }
 
         public void RemoveAt(int index)
         {
+            if (_count == 0) throw new EmptyListException();
+            if (index >= _count) throw new IndexOutOfRangeException();
+            for(int i = index; i<_count; i++)
+            {
+                //todo
+            }
         }
 
         public int Find(T data)
         {
+            return 0;
         }
     }
 }
