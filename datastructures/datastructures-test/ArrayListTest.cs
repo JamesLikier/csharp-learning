@@ -55,5 +55,15 @@
             Assert.ThrowsException<NotFoundException>(() => l.Remove(1));
             Assert.AreEqual(true, l.ToArray() is [2, 3]);
         }
+        [TestMethod]
+        public void RemoveAtTest()
+        {
+            //todo
+        }
+        [TestMethod]
+        public void FindTest()
+        {
+            //todo
+        }
     }
 }
