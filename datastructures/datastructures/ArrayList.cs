@@ -80,5 +80,22 @@ namespace datastructures
             }
             _count++;
         }
+
+        public void Append(T data)
+        {
+            Insert(data, _count);
+        }
+
+        public void Remove(T data)
+        {
+        }
+
+        public void RemoveAt(int index)
+        {
+        }
+
+        public int Find(T data)
+        {
+        }
     }
 }
