@@ -31,7 +31,8 @@
                 l.Insert(1, i);
             }
             Assert.AreEqual(15, l.Count);
-            //wip
+            Assert.ThrowsException<IndexOutOfBoundsException>(()=>{l.Insert(1,-1);});
+            Assert.ThrowsException<IndexOutOfBoundsException>(()=>{l.Insert(1,l.Count+1);});
         }
     }
 }
