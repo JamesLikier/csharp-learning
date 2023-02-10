@@ -6,89 +6,101 @@
     public class ArrayListTest
     {
         [TestMethod]
-        public void ClearListTest()
+        public void ClearTest()
         {
             ds.ArrayList<int> l = new();
-            l.Insert(1, 0);
-            l.ClearList();
+            l.Clear();
             Assert.AreEqual(0, l.Count);
+        }
+        [TestMethod]
+        public void CopyToTest()
+        {
+            ds.ArrayList<int> l = new();
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            int[] data = new int[l.Count * 2];
+            l.CopyTo(data, 0);
+            Assert.IsTrue(data is [1, 2, 3, 0, 0, 0]);
+            l.CopyTo(data, l.Count);
+            Assert.IsTrue(data is [1, 2, 3, 1, 2, 3]);
         }
         [TestMethod]
         public void InsertTest()
         {
             ds.ArrayList<int> l = new();
-            l.Insert(1, 0);
-            Assert.AreEqual(true, l.ToArray() is [1]);
-            l.Insert(2, 0);
-            Assert.AreEqual(true, l.ToArray() is [2, 1]);
-            l.Insert(3, 2);
-            Assert.AreEqual(true, l.ToArray() is [2, 1, 3]);
-            l.Insert(4, 1);
-            Assert.AreEqual(true, l.ToArray() is [2, 4, 1, 3]);
-            l = new();
-            for(int i = 0; i < 15; i++)
-            {
-                l.Insert(1, i);
-            }
-            Assert.AreEqual(15, l.Count);
-            Assert.ThrowsException<IndexOutOfRangeException>(()=>{l.Insert(1,-1);});
-            Assert.ThrowsException<IndexOutOfRangeException>(()=>{l.Insert(1,l.Count+1);});
+            Assert.ThrowsException<IndexOutOfRangeException>(() => l.Insert(-1, 0));
+            Assert.ThrowsException<IndexOutOfRangeException>(() => l.Insert(1, 0));
+            l.Insert(0, 0);//0
+            l.Insert(0, 1);//1,0
+            l.Insert(l.Count, 2);//1,0,2
+            l.Insert(1, 3);//1,3,0,2
+            Assert.IsTrue(l is [1, 3, 0, 2]);
+            Assert.AreEqual(4, l.Count);
         }
         [TestMethod]
-        public void AppendTest()
+        public void ItemTest()
         {
             ds.ArrayList<int> l = new();
-            l.Append(3);
-            l.Append(2);
-            l.Append(1);
-            Assert.AreEqual(true, l.ToArray() is [3, 2, 1]);
+            l[0] = 1;
+            Assert.AreEqual(1, l.Count);
+            Assert.AreEqual(1, l[0]);
+        }
+        [TestMethod]
+        public void AddTest()
+        {
+            ds.ArrayList<int> l = new();
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            Assert.IsTrue(l is [1, 2, 3]);
+            Assert.AreEqual(3, l.Count);
         }
         [TestMethod]
         public void RemoveTest()
         {
             ds.ArrayList<int> l = new();
-            Assert.ThrowsException<EmptyListException>(() => l.Remove(1));
-            l.Append(1);
-            l.Append(2);
-            l.Append(3);
-            Assert.AreEqual(1, l.Remove(1));
-            Assert.ThrowsException<NotFoundException>(() => l.Remove(1));
-            Assert.AreEqual(true, l.ToArray() is [2, 3]);
-            Assert.AreEqual(2, l.Count);
+            Assert.IsFalse(l.Remove(1));
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            Assert.IsTrue(l.Remove(1));
+            Assert.IsTrue(l.Remove(3));
+            Assert.IsTrue(l.Remove(2));
+            Assert.AreEqual(0, l.Count);
         }
         [TestMethod]
         public void RemoveAtTest()
         {
             ds.ArrayList<int> l = new();
-            Assert.ThrowsException<EmptyListException>(()=>l.RemoveAt(0));
-            l.Append(1);
-            Assert.ThrowsException<IndexOutOfRangeException>(()=>l.RemoveAt(1));
-            Assert.ThrowsException<IndexOutOfRangeException>(()=>l.RemoveAt(-1));
+            Assert.ThrowsException<IndexOutOfRangeException>(() => l.RemoveAt(0));
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
             l.RemoveAt(0);
-            Assert.AreEqual(0, l.Count);
-            for(int i = 1; i <= 5; i++) l.Append(i);
-            //remove root
-            Assert.AreEqual(1, l.RemoveAt(0));
-            Assert.AreEqual(4, l.Count);
-            Assert.AreEqual(true, l.ToArray() is [2,3,4,5]);
-            //remove tail
-            Assert.AreEqual(5, l.RemoveAt(l.Count-1));
-            Assert.AreEqual(3, l.Count);
-            Assert.AreEqual(true, l.ToArray() is [2,3,4]);
-            //remove middle
-            Assert.AreEqual(3, l.RemoveAt(1));
-            Assert.AreEqual(2, l.Count);
-            Assert.AreEqual(true, l.ToArray() is [2,4]);
+            Assert.IsTrue(l is [2, 3]);
         }
         [TestMethod]
-        public void FindTest()
+        public void IndexOfTest()
         {
             ds.ArrayList<int> l = new();
-            Assert.ThrowsException<EmptyListException>(()=>l.Find(1));
-            int[] nums = new int[] {1,2,3,4,5};
-            foreach(int n in nums) l.Append(n);
-            Assert.AreEqual(0, l.Find(1));
-            Assert.AreEqual(4, l.Find(5));
+            Assert.AreEqual(-1, l.IndexOf(1));
+            l.Add(1);
+            Assert.AreEqual(0, l.IndexOf(1));
+            l.Add(2);
+            Assert.AreEqual(1, l.IndexOf(2));
+        }
+        [TestMethod]
+        public void ContainsTest()
+        {
+            ds.ArrayList<int> l = new();
+            Assert.IsFalse(l.Contains(1));
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            Assert.IsTrue(l.Contains(1));
+            Assert.IsTrue(l.Contains(2));
+            Assert.IsTrue(l.Contains(3));
         }
     }
 }

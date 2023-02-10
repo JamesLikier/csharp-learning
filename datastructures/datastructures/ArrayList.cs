@@ -1,6 +1,8 @@
 namespace datastructures
 {
-    public class ArrayList<T>
+    using System.Collections;
+    using System.Collections.Generic;
+    public class ArrayList<T> : IList<T>
     {
         private int _count;
         public int Count { get { return _count;} }
@@ -13,23 +15,41 @@ namespace datastructures
             Storage = new T[SizeInc];
         }
 
-        public void ClearList()
+        public bool IsReadOnly { get; }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = 0; i < _count; i++) yield return Storage[i];
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Clear()
         {
             _count = 0;
             Storage = new T[SizeInc];
         }
 
-        public T[] ToArray()
+        public void CopyTo(T[] array, int arrayIndex)
         {
-            T[] newArray = new T[_count];
-            for (int i = 0; i < _count; i++)
-            {
-                newArray[i] = Storage[i];
-            }
-            return newArray;
+            for(int i = 0; i < _count; i++) array[i+arrayIndex] = Storage[i];
         }
 
-        public void Insert(T data, int index)
+        public T this[int index]
+        {
+            get 
+            {
+                if (index < 0 || index >= _count) throw new IndexOutOfRangeException();
+                return Storage[index]; 
+            }
+            set
+            {
+                Insert(index, value);
+            }
+        }
+        public void Insert(int index, T data)
         {
             if (index > _count && index != 0) throw new IndexOutOfRangeException();
             //need to resize array
@@ -81,38 +101,46 @@ namespace datastructures
             _count++;
         }
 
-        public void Append(T data)
+        public void Add(T data)
         {
-            Insert(data, _count);
+            this[_count] = data;
         }
 
-        public T Remove(T data)
+        public bool Remove(T data)
         {
-            return RemoveAt(Find(data));
+            int index = IndexOf(data);
+            if (index >= 0)
+            {
+                RemoveAt(index);
+                return true;
+            }
+            return false;
         }
 
-        public T RemoveAt(int index)
+        public void RemoveAt(int index)
         {
-            if (_count == 0) throw new EmptyListException();
             if (index >= _count || index < 0) throw new IndexOutOfRangeException();
-            T data = Storage[index];
             //if index is not tail, move everything backwards
             for(int i = index; i<(_count - 1); i++)
             {
                 Storage[i] = Storage[i+1];
             }
             _count--;
-            return data;
         }
 
-        public int Find(T data)
+        public int IndexOf(T data)
         {
-            if (_count == 0) throw new EmptyListException();
             for(int i = 0; i < _count; i++)
             {
                 if(Storage[i] is { } n && n.Equals(data)) return i;
             }
-            throw new NotFoundException();
+            return -1;
+        }
+
+        public bool Contains(T data)
+        {
+            foreach(T d in this) if (d is { } dd && dd.Equals(dd)) return true;
+            return false;
         }
     }
 }
