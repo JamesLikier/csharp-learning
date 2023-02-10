@@ -88,14 +88,14 @@ namespace datastructures
 
         public T Remove(T data)
         {
-            RemoveAt(Find(data));
-            return data;
+            return RemoveAt(Find(data));
         }
 
-        public void RemoveAt(int index)
+        public T RemoveAt(int index)
         {
             if (_count == 0) throw new EmptyListException();
             if (index >= _count || index < 0) throw new IndexOutOfRangeException();
+            T data = Storage[index];
             //if index is not tail, move everything backwards
             for(int i = index; i<(_count - 1); i++)
             {
@@ -104,6 +104,7 @@ namespace datastructures
             //remove tail
             Storage[_count-1] = default(T);
             _count--;
+            return data;
         }
 
         public int Find(T data)

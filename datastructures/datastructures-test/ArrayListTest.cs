@@ -54,16 +54,41 @@
             Assert.AreEqual(1, l.Remove(1));
             Assert.ThrowsException<NotFoundException>(() => l.Remove(1));
             Assert.AreEqual(true, l.ToArray() is [2, 3]);
+            Assert.AreEqual(2, l.Count);
         }
         [TestMethod]
         public void RemoveAtTest()
         {
-            //todo
+            ds.ArrayList<int> l = new();
+            Assert.ThrowsException<EmptyListException>(()=>l.RemoveAt(0));
+            l.Append(1);
+            Assert.ThrowsException<IndexOutOfRangeException>(()=>l.RemoveAt(1));
+            Assert.ThrowsException<IndexOutOfRangeException>(()=>l.RemoveAt(-1));
+            l.RemoveAt(0);
+            Assert.AreEqual(0, l.Count);
+            for(int i = 1; i <= 5; i++) l.Append(i);
+            //remove root
+            Assert.AreEqual(1, l.RemoveAt(0));
+            Assert.AreEqual(4, l.Count);
+            Assert.AreEqual(true, l.ToArray() is [2,3,4,5]);
+            //remove tail
+            Assert.AreEqual(5, l.RemoveAt(l.Count-1));
+            Assert.AreEqual(3, l.Count);
+            Assert.AreEqual(true, l.ToArray() is [2,3,4]);
+            //remove middle
+            Assert.AreEqual(3, l.RemoveAt(1));
+            Assert.AreEqual(2, l.Count);
+            Assert.AreEqual(true, l.ToArray() is [2,4]);
         }
         [TestMethod]
         public void FindTest()
         {
-            //todo
+            ds.ArrayList<int> l = new();
+            Assert.ThrowsException<EmptyListException>(()=>l.Find(1));
+            int[] nums = new int[] {1,2,3,4,5};
+            for(int n in nums) l.Append(n);
+            Assert.AreEqual(0, l.Find(1));
+            Assert.AreEqual(4, l.Find(5));
         }
     }
 }
