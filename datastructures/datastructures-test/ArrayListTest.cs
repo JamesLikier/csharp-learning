@@ -86,7 +86,7 @@
             ds.ArrayList<int> l = new();
             Assert.ThrowsException<EmptyListException>(()=>l.Find(1));
             int[] nums = new int[] {1,2,3,4,5};
-            for(int n in nums) l.Append(n);
+            foreach(int n in nums) l.Append(n);
             Assert.AreEqual(0, l.Find(1));
             Assert.AreEqual(4, l.Find(5));
         }

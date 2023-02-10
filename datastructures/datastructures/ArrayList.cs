@@ -101,8 +101,6 @@ namespace datastructures
             {
                 Storage[i] = Storage[i+1];
             }
-            //remove tail
-            Storage[_count-1] = default(T);
             _count--;
             return data;
         }
@@ -112,7 +110,7 @@ namespace datastructures
             if (_count == 0) throw new EmptyListException();
             for(int i = 0; i < _count; i++)
             {
-                if(Storage[i].Equals(data)) return i;
+                if(Storage[i] is { } n && n.Equals(data)) return i;
             }
             throw new NotFoundException();
         }
