@@ -10,10 +10,10 @@ namespace datastructures_test
         public void TestPop()
         {
             DS.Stack<int> stack = new();
-            Assert.ThrowsException<EmptyListException>(() => { stack.Pop(); });
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { stack.Pop(); });
             stack.Push(1);
             Assert.AreEqual(1, stack.Pop());
-            Assert.ThrowsException<EmptyListException>(() => { stack.Pop(); });
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { stack.Pop(); });
 
             stack.Push(1);
             stack.Push(2);

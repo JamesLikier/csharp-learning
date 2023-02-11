@@ -1,9 +1,9 @@
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
-
 namespace datastructures
 {
-    public class LinkedList<T>
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    public class LinkedList<T> : IList<T>
     {
         private class Node
         {
@@ -24,13 +24,23 @@ namespace datastructures
         private Node? Last;
         private int _count;
         public int Count { get { return _count; } }
+        public bool IsReadOnly { get; }
         public LinkedList()
         {
             Root = null;
             Last = null;
             _count = 0;
         }
-        private void Remove(Node n)
+        public T this[int index]
+        {
+            get
+            {
+                if (index >= _count || index < 0) throw new IndexOutOfRangeException();
+                return GetNode(index)!.Data;
+            }
+            set { Insert(index, value); }
+        }
+        private void RemoveNode(Node n)
         {
             if (_count == 1)
             {
@@ -54,19 +64,37 @@ namespace datastructures
             }
             _count--;
         }
-        public void ClearList()
+        public IEnumerator<T> GetEnumerator()
+        {
+            Node? n = Root;
+            while(n is { })
+            {
+                yield return n.Data;
+                n = n.Next;
+            }
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+        public void CopyTo(T[] toArray, int startIndex)
+        {
+            int i = startIndex;
+            foreach(T d in this) toArray[i++] = d;
+        }
+        public void Clear()
         {
             Root = null;
             Last = null;
             _count = 0;
         }
-        public void Append(T data)
+        public void Add(T data)
         {
-            Insert(data, _count);
+            Insert(_count, data);
         }
-        public void Insert(T data, int index)
+        public void Insert(int index, T data)
         {
-            if (index > _count) throw new IndexOutOfRangeException();
+            if (index > _count || index < 0) throw new IndexOutOfRangeException();
             if (_count == 0)
             {
                 Root = new(data, null, null);
@@ -83,84 +111,70 @@ namespace datastructures
             }
             else
             {
-                Node insertBefore = GetNode(index);
-                new Node(data, insertBefore.Prev, insertBefore);
+                Node? insertBefore = GetNode(index);
+                new Node(data, insertBefore?.Prev, insertBefore);
             }
             _count++;
         }
-        public T Remove(T data)
+        public bool Remove(T data)
         {
-            if (_count == 0) throw new EmptyListException();
-            Node n = FindNode(data);
-            Remove(n);
-            return n.Data;
+            Node? n = FindNode(data);
+            if (n is not null)
+            {
+                RemoveNode(n);
+                return true;
+            }
+            return false;
         }
-        public T RemoveAt(int index)
+        public void RemoveAt(int index)
         {
-            if (Root is null) throw new EmptyListException();
-            if (index >= _count || index < 0) throw new IndexOutOfRangeException();
-            Node n = GetNode(index);
-            Remove(n);
-            return n.Data;
+            Node? n = GetNode(index);
+            if (n is { })
+            {
+                RemoveNode(n);
+            }
         }
-        public T Pop()
+        public int IndexOf(T data)
         {
-            if (Last is null) throw new EmptyListException();
-            Node n = Last;
-            Remove(n);
-            return n.Data;
-        }
-        public int FindPosition(T data)
-        {
-            if (Root is null) throw new EmptyListException();
             Node? cur = Root;
             int pos = 0;
             while (cur is not null)
             {
-                if (cur.Data is not null && cur.Data.Equals(data)) return pos;
+                if (cur.Data is { } d && d.Equals(data)) return pos;
                 pos++;
                 cur = cur.Next;
             }
-            throw new NotFoundException();
+            return -1;
         }
 
-        private Node GetNode(int index)
+        private Node? GetNode(int index)
         {
-            if (Root is null || Last is null) throw new EmptyListException();
-            if (index > _count || index < 0) throw new IndexOutOfRangeException();
-            if (index == _count) return Last;
+            if (index >= _count || index < 0) throw new IndexOutOfRangeException();
+            if (Root is null) return null;
+            if (index == _count-1) return Last;
             Node cur = Root;
             int pos = 0;
-            while (pos < index && cur.Next is not null)
+            while (pos < index && cur.Next is { })
             {
                 cur = cur.Next;
                 pos++;
             }
-            return cur!;
+            return cur;
         }
-        private Node FindNode(T data)
+        private Node? FindNode(T data)
         {
-            if (Root is null) throw new EmptyListException();
             Node? cur = Root;
             while (cur is not null)
             {
                 if (cur.Data is not null && cur.Data.Equals(data)) return cur;
                 cur = cur.Next;
             }
-            throw new NotFoundException();
+            return null;
         }
-        public T[] ToArray()
+        public bool Contains(T data)
         {
-            if (Root is null) throw new EmptyListException();
-            Node cur = Root;
-            T[] result =  new T[_count];
-            for (int i = 0; i < _count && cur is not null; i++)
-            {
-                result[i] = cur.Data;
-                cur = cur.Next!;
-            }
-            return result;
-
+            if (IndexOf(data) >= 0) return true;
+            return false;
         }
     }
 }

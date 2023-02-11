@@ -7,115 +7,110 @@ namespace datastructures_test
     public class LinkedListTest
     {
         [TestMethod]
-        public void ConstructorTest()
+        public void ItemTest()
         {
             ds.LinkedList<int> l = new();
-            Assert.AreEqual(0, l.Count);
-        }
-        [TestMethod]
-        public void ClearListTest()
-        {
-            ds.LinkedList<int> l = new();
-            l.ClearList();
-            Assert.AreEqual(0, l.Count);
-            l.Append(1);
-            l.ClearList();
-            Assert.AreEqual(0, l.Count);
-        }
-        [TestMethod]
-        public void AppendTest()
-        {
-            ds.LinkedList<int> l = new();
-            l.Append(1);
-            Assert.AreEqual(1, l.Count);
-            l.Append(2);
+            Assert.ThrowsException<IndexOutOfRangeException>(() => l[1]);
+            Assert.ThrowsException<IndexOutOfRangeException>(() => l[-1]);
+            l[0] = 1;
+            l[1] = 2;
             Assert.AreEqual(2, l.Count);
-            Assert.AreEqual(l.ToArray() is [1, 2], true);
+            Assert.IsTrue(l is [1, 2]);
+        }
+        [TestMethod]
+        public void ClearTest()
+        {
+            ds.LinkedList<int> l = new();
+            l.Append(1);
+            l.Clear();
+            Assert.AreEqual(0, l.Count);
+        }
+        [TestMethod]
+        public void AddTest()
+        {
+            ds.LinkedList<int> l = new();
+            l.Add(1);
+            Assert.AreEqual(1, l.Count);
+            l.Add(2);
+            Assert.AreEqual(2, l.Count);
+            Assert.IsTrue(l is [1, 2]);
         }
         [TestMethod]
         public void InsertTest()
         {
             ds.LinkedList<int> l = new();
-            l.Insert(1, 0);
-            Assert.AreEqual(1, l.Count);
-            l.Insert(2, 0);
-            Assert.AreEqual(2, l.Count);
-            Assert.ThrowsException<IndexOutOfRangeException>(() => { l.Insert(3, 5); });
-            Assert.AreEqual(2, l.Count);
-            Assert.ThrowsException<IndexOutOfRangeException>(() => { l.Insert(3, -1); });
-            Assert.AreEqual(2, l.Count);
-            Assert.AreEqual(l.ToArray() is [2, 1], true);
-            l.Insert(3, l.Count);
-            Assert.AreEqual(true, l.ToArray() is [2, 1, 3]);
-            l.Insert(4, 1);
-            Assert.AreEqual(true, l.ToArray() is [2, 4, 1, 3]);
+            l.Insert(0,1);//1
+            l.Insert(0, 2);//2,1
+            l.Insert(l.Count, 3);//2,1,3
+            l.Insert(1, 4);//2,4,1,3
             Assert.AreEqual(4, l.Count);
+            Assert.IsTrue(l is [2, 4, 1, 3]);
         }
         [TestMethod]
         public void RemoveTest()
         {
             ds.LinkedList<int> l = new();
-            Assert.ThrowsException<EmptyListException>(()=> { l.Remove(1); });
-            l.Append(1);
-            Assert.ThrowsException<NotFoundException>(() => { l.Remove(2); });
-            l.Remove(1);
-            Assert.AreEqual(0, l.Count);
-            l.Append(1);
-            l.Append(2);
-            l.Append(3);
-            Assert.AreEqual(true, l.ToArray() is [1, 2, 3]);
-            l.Remove(1);
-            Assert.AreEqual(true, l.ToArray() is [2, 3]);
-            l.Remove(3);
-            Assert.AreEqual(true, l.ToArray() is [2]);
-            l.Remove(2);
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            Assert.IsTrue(l.Remove(1));
+            Assert.IsTrue(l.Remove(3));
+            Assert.IsTrue(l.Remove(2));
             Assert.AreEqual(0,l.Count);
+            Assert.IsFalse(l.Remove(1));
         }
         [TestMethod]
         public void RemoveAtTest()
         {
             ds.LinkedList<int> l = new();
-            Assert.ThrowsException<EmptyListException>(() => { l.RemoveAt(0); });
-            l.Append(1);
-            Assert.ThrowsException<IndexOutOfRangeException>(() => { l.RemoveAt(-1); });
-            Assert.ThrowsException<IndexOutOfRangeException>(() => { l.RemoveAt(1); });
+            Assert.ThrowsException<IndexOutOfRangeException>(()=>l.RemoveAt(0));
+            Assert.ThrowsException<IndexOutOfRangeException>(()=>l.RemoveAt(-1));
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            l.RemoveAt(0);
+            Assert.IsTrue(l is [2, 3]);
+            l.RemoveAt(l.Count - 1);
+            Assert.IsTrue(l is [2]);
             l.RemoveAt(0);
             Assert.AreEqual(0, l.Count);
-            l.Append(1);
-            l.Append(2);
-            l.Append(3);
-            Assert.AreEqual(true, l.ToArray() is [1, 2, 3]);
-            Assert.AreEqual(1, l.RemoveAt(0));
-            Assert.AreEqual(true, l.ToArray() is [2, 3]);
-            Assert.AreEqual(3, l.RemoveAt(1));
-            Assert.AreEqual(true, l.ToArray() is [2]);
-            Assert.AreEqual(2, l.RemoveAt(0));
-            Assert.AreEqual(0, l.Count);
         }
         [TestMethod]
-        public void PopTest()
+        public void IndexOfTest()
         {
             ds.LinkedList<int> l = new();
-            Assert.ThrowsException<EmptyListException>(() => { l.Pop(); });
-            l.Append(1);
-            l.Append(2);
-            l.Append(3);
-            Assert.AreEqual(3, l.Pop());
-            Assert.AreEqual(2, l.Pop());
-            Assert.AreEqual(1, l.Pop());
-            Assert.AreEqual(0, l.Count);
+            Assert.AreEqual(-1, l.IndexOf(1));
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            Assert.AreEqual(0, l.IndexOf(1));
+            Assert.AreEqual(1, l.IndexOf(2));
+            Assert.AreEqual(2, l.IndexOf(3));
         }
         [TestMethod]
-        public void FindPositionTest()
+        public void CopyToTest()
         {
             ds.LinkedList<int> l = new();
-            Assert.ThrowsException<EmptyListException>(() => { l.FindPosition(1); });
-            l.Append(1);
-            l.Append(2);
-            l.Append(3);
-            Assert.AreEqual(0, l.FindPosition(1));
-            Assert.AreEqual(1, l.FindPosition(2));
-            Assert.AreEqual(2, l.FindPosition(3));
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            int[] data = new int[l.Count * 2];
+            l.CopyTo(data, 0);
+            Assert.IsTrue(data is [1, 2, 3, 0, 0, 0]);
+            l.CopyTo(data, l.Count);
+            Assert.IsTrue(data is [1, 2, 3, 1, 2, 3]);
+        }
+        [TestMethod]
+        public void ContainsTest()
+        {
+            ds.LinkedList<int> l = new();
+            Assert.IsFalse(l.Contains(1));
+            l.Add(1);
+            l.Add(2);
+            l.Add(3);
+            Assert.IsTrue(l.Contains(1));
+            Assert.IsTrue(l.Contains(2));
+            Assert.IsTrue(l.Contains(3));
         }
     }
 }

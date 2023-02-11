@@ -36,7 +36,7 @@
 
         public T Remove()
         {
-            if (Root is null) throw new EmptyListException();
+            if(Root is null) throw new IndexOutOfRangeException();
             Node n = Root;
             Root = Root.Next;
             n.Next= null;

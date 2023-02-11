@@ -25,7 +25,7 @@ namespace datastructures_test
         public void RemoveTest()
         {
             ds.Queue<int> q = new();
-            Assert.ThrowsException<EmptyListException>(() => { q.Remove(); });
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { q.Remove(); });
             q.Add(1);
             q.Add(2);
             q.Add(3);
@@ -39,7 +39,7 @@ namespace datastructures_test
             Assert.AreEqual(1, q.Count);
             q.Remove();
             Assert.AreEqual(0, q.Count);
-            Assert.ThrowsException<EmptyListException>(() => { q.Remove(); });
+            Assert.ThrowsException<IndexOutOfRangeException>(() => { q.Remove(); });
         }
     }
 }

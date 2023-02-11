@@ -35,7 +35,7 @@
 
         public T Pop()
         {
-            if (Root is null) throw new EmptyListException();
+            if (Root is null) throw new IndexOutOfRangeException();
             T RData = Root.Data;
             Root = Root.Prev;
             _count--;
