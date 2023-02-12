@@ -31,6 +31,25 @@ namespace datastructures
 
         public void Add(T data)
         {
+            //empty tree
+            if (Root is null)
+            {
+                Root = new Node(data, null, null, null);
+            }
+            //not empty
+            else
+            {
+                Node? n = Root;
+                if(data < n.data && n.children[Node.LEFT] is null)
+                {
+                    n.children[Node.LEFT] = new Node(data, n, null, null);
+                }
+                else if (data > n.data && n.children[Node.RIGHT] is null)
+                {
+                    n.children[Node.RIGHT] = new Node(data, n, null, null);
+                }
+                //todo
+            }
         }
 
         public bool Remove(T data)
