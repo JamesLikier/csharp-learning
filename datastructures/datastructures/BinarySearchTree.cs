@@ -186,5 +186,31 @@ namespace datastructures
         {
             return FindNode(data) is not null;
         }
+        
+        public IEnumerator<T> InOrder()
+        {
+            //todo
+            if (Root is not null)
+            {
+                Stack<Node> stack = new();
+                Node? cursor = Root;
+                //go left as far as possible to get smallest node
+                while (cursor is not null)
+                {
+                    stack.Push(cursor);
+                    cursor = cursor.children[Node.LEFT];
+                }
+                while(stack.Count > 0)
+                {
+                    cursor = stack.Pop();
+                    if (cursor.children[Node.LEFT] is null)
+                    {
+                        yield return cursor.data;
+                        //todo
+                    }
+                }
+            }
+
+        }
     }
 }
