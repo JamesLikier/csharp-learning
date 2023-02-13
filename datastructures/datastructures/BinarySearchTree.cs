@@ -212,7 +212,44 @@ namespace datastructures
                     }
                 }
             }
+        }
 
+        public IEnumerable<T> DepthFirst()
+        {
+            if(Root is not null)
+            {
+                Node cursor = Root;
+                Node? lChild = cursor.children[Node.LEFT];
+                Node? rChild = cursor.children[Node.RIGHT];
+                Stack<Node> stack = new();
+
+                while(cursor is not null)
+                {
+                    yield return cursor.data;
+                    //go left if possible
+                    if(cursor.children[Node.LEFT] is not null)
+                    {
+                        cursor = cursor.children[Node.LEFT];
+                        stack.Push(cursor);
+                    }
+                    //can't go left, try going right
+                    else
+                    {
+                        if (stack.Count > 0)
+                        {
+                            cursor = stack.Pop();
+                            while(cursor.children[Node.RIGHT] is null && stack.Count > 0)
+                            {
+                                cursor = stack.Pop();
+                            }
+                            if (cursor.children[Node.RIGHT] not null)
+                            {
+                                cursor = cursor.children[Node.RIGHT];
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
