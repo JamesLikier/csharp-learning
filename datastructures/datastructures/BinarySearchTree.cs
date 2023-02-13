@@ -187,7 +187,7 @@ namespace datastructures
             return FindNode(data) is not null;
         }
         
-        public IEnumerator<T> InOrder()
+        public IEnumerable<T> InOrder()
         {
             //todo
             if (Root is not null)
