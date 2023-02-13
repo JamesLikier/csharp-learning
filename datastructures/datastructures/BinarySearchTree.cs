@@ -246,6 +246,10 @@ namespace datastructures
                             {
                                 cursor = cursor.children[Node.RIGHT];
                             }
+                            else
+                            {
+                                break;
+                            }
                         }
                     }
                 }
