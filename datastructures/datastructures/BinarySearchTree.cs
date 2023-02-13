@@ -203,7 +203,16 @@ namespace datastructures
                 while(stack.Count > 0)
                 {
                     cursor = stack.Pop();
+                    Node? lChild = cursor.children[Node.LEFT];
+                    Node? rChild = cursor.children[Node.RIGHT];
                     yield return cursor.data;
+                    //go right once, then add all left nodes
+                    cursor = rChild;
+                    while(cursor is not null)
+                    {
+                        stack.Push(cursor);
+                        cursor = cursor.children[Node.LEFT];
+                    }
                 }
             }
 
