@@ -203,11 +203,7 @@ namespace datastructures
                 while(stack.Count > 0)
                 {
                     cursor = stack.Pop();
-                    if (cursor.children[Node.LEFT] is null)
-                    {
-                        yield return cursor.data;
-                        //todo
-                    }
+                    yield return cursor.data;
                 }
             }
 
