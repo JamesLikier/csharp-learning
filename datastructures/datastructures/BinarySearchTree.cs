@@ -242,7 +242,7 @@ namespace datastructures
                             {
                                 cursor = stack.Pop();
                             }
-                            if (cursor.children[Node.RIGHT] not null)
+                            if (cursor.children[Node.RIGHT] is not null)
                             {
                                 cursor = cursor.children[Node.RIGHT];
                             }
