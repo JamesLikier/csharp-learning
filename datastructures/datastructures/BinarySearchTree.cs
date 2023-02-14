@@ -217,7 +217,7 @@ namespace datastructures
         {
             if(Root is not null)
             {
-                Node cursor = Root;
+                Node? cursor = Root;
                 Node? lChild = cursor.children[Node.LEFT];
                 Node? rChild = cursor.children[Node.RIGHT];
                 Stack<Node> stack = new();
@@ -228,6 +228,7 @@ namespace datastructures
                     //go left if possible
                     if(cursor.children[Node.LEFT] is not null)
                     {
+                        //save this node for checking right nodes later
                         stack.Push(cursor);
                         cursor = cursor.children[Node.LEFT];
                     }
@@ -240,9 +241,8 @@ namespace datastructures
                             cursor = cursor.children[Node.RIGHT];
                         }
                         //cursor does not have a right node, so pop a node to try again
-                        else if (stack.Count > 0)
+                        else
                         {
-                            cursor = stack.Pop();
                             //pop a node until we find a right node
                             while(cursor.children[Node.RIGHT] is null && stack.Count > 0)
                             {
