@@ -70,7 +70,7 @@ namespace datastructures
                         if (current is null)
                         {
                             parent.children[Node.LEFT] = new Node(data, parent, null, null);
-                            return;
+                            break;
                         }
                     }
                     //go right
@@ -81,11 +81,11 @@ namespace datastructures
                         if (current is null)
                         {
                             parent.children[Node.RIGHT] = new Node(data, parent, null, null);
-                            return;
+                            break;
                         }
                     }
-                            _count++;
                 }
+                _count++;
             }
         }
         private Node? FindNode(T data)
