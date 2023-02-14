@@ -23,7 +23,19 @@ namespace datastructures
         private int _count;
         public int Count { get { return _count; } }
         private Comparer<T> _comparer;
+        private class DefaultComparer : Comparer<T>
+        {
+            public override int Compare(T? x, T? y)
+            {
+                if (x is null) throw new ArgumentException("x is null");
+                if (y is null) throw new ArgumentException("y is null");
+                return x.GetHashCode().CompareTo(y.GetHashCode());
+            }
+        }
 
+        public BinarySearchTree() : this(new DefaultComparer())
+        {
+        }
         public BinarySearchTree(Comparer<T> comparer)
         {
             this.Root = null;
