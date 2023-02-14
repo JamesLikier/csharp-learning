@@ -37,6 +37,7 @@ namespace datastructures
             if (Root is null)
             {
                 Root = new Node(data, null, null, null);
+                _count++;
             }
             //not empty
             else
@@ -71,6 +72,7 @@ namespace datastructures
                             return;
                         }
                     }
+                            _count++;
                 }
             }
         }
@@ -133,6 +135,7 @@ namespace datastructures
                     RemoveOneChild(current);
                 }
             }
+            _count--;
             return true;
         }
         private void RemoveNoChild(Node n)
@@ -213,7 +216,8 @@ namespace datastructures
                 }
             }
         }
-        public IEnumerable<T> DepthFirst()
+
+        public IEnumerable<T> PreOrder()
         {
             if(Root is not null)
             {
