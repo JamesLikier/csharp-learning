@@ -3,44 +3,31 @@
     using datastructures;
     using ds = datastructures;
     using System.Linq;
+    using System.Globalization;
+
     [TestClass]
     public class BinarySearchTreeTest
     {
-        public static int CreateTreeCount = 0;
+        public static int[] nums = new int[] { 10, 5, 3, 4, 2, 1, 15, 17, 16, 20, 19, 18, 6, 7, 14 };
+        /*
+         *                      10
+         *                 5          15
+         *             3     6     14      17
+         *           2   4     7        16    20
+         *         1                        19
+         *                                18
+         */
         public ds.BinarySearchTree<int> CreateTree()
         {
             ds.BinarySearchTree<int> bst = new();
-            bst.Add(10);//1
-            bst.Add(5);//2
-            bst.Add(3);//3
-            bst.Add(4);//4
-            bst.Add(2);//5
-            bst.Add(1);//6
-            bst.Add(15);//7
-            bst.Add(17);//8
-            bst.Add(16);//9
-            bst.Add(20);//10
-            bst.Add(19);//11
-            bst.Add(18);//12
-            bst.Add(6);//13
-            bst.Add(7);//14
-            bst.Add(14);//15
-            BinarySearchTreeTest.CreateTreeCount = 15;
+            foreach (int i in nums) bst.Add(i);
             return bst;
-            /*
-             *                      10
-             *                 5          15
-             *             3     6     14      17
-             *           2   4     7        16    20
-             *         1                        19
-             *                                18
-             */
         }
         [TestMethod]
         public void AddTest()
         {
             BinarySearchTree<int> bst = CreateTree();
-            Assert.AreEqual(BinarySearchTreeTest.CreateTreeCount, bst.Count);
+            Assert.AreEqual(nums.Length, bst.Count);
         }
         [TestMethod]
         public void RemoveTest()
@@ -56,7 +43,7 @@
             //remove node with 2 children
             Assert.IsTrue(bst.Remove(3));
             Assert.IsTrue(bst.Remove(10));
-            Assert.AreEqual(BinarySearchTreeTest.CreateTreeCount-5, bst.Count);
+            Assert.AreEqual(nums.Length-5, bst.Count);
             int[] preorder = (bst.PreOrder()).ToArray();
             Assert.IsTrue(preorder is [14, 5, 4, 2, 6, 15, 17, 16, 20, 18]);
         }
