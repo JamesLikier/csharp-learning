@@ -213,7 +213,6 @@ namespace datastructures
                 }
             }
         }
-
         public IEnumerable<T> DepthFirst()
         {
             if(Root is not null)
@@ -229,23 +228,32 @@ namespace datastructures
                     //go left if possible
                     if(cursor.children[Node.LEFT] is not null)
                     {
-                        cursor = cursor.children[Node.LEFT];
                         stack.Push(cursor);
+                        cursor = cursor.children[Node.LEFT];
                     }
                     //can't go left, try going right
                     else
                     {
-                        if (stack.Count > 0)
+                        //check if cursor has a right node
+                        if(cursor.children[Node.RIGHT] is not null)
+                        {
+                            cursor = cursor.children[Node.RIGHT];
+                        }
+                        //cursor does not have a right node, so pop a node to try again
+                        else if (stack.Count > 0)
                         {
                             cursor = stack.Pop();
+                            //pop a node until we find a right node
                             while(cursor.children[Node.RIGHT] is null && stack.Count > 0)
                             {
                                 cursor = stack.Pop();
                             }
+                            //we found a node
                             if (cursor.children[Node.RIGHT] is not null)
                             {
                                 cursor = cursor.children[Node.RIGHT];
                             }
+                            //no more nodes to check
                             else
                             {
                                 break;
