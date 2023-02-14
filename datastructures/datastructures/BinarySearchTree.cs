@@ -231,6 +231,21 @@ namespace datastructures
 
         public IEnumerable<T> PreOrder()
         {
+            /*
+             * Basic Algorithm:
+             * Follow left nodes as far as possible,
+             * adding current node to stack when left child exists.
+             * 
+             * Continue until no left child exists,
+             * then pop a node from the stack to check for a right node.
+             * 
+             * If right node exists, repeat above steps for going down
+             * as far left as possible.
+             * 
+             * Finished when stack is empty and current node has no
+             * right child.
+             * 
+             */
             if(Root is not null)
             {
                 Node? cursor = Root;
