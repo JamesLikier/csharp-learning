@@ -204,6 +204,25 @@ namespace datastructures
         
         public IEnumerable<T> InOrder()
         {
+            /*
+             * Basic Algorithm:
+             * Follow left nodes as far as possible,
+             * adding current node to stack when left child exists.
+             * 
+             * Continue until no left child exists,
+             * then pop a node from the stack to check for a right node.
+             * 
+             * If right node exists, repeat above steps for going down
+             * as far left as possible.
+             * 
+             * Finished when stack is empty and current node has no
+             * right child.
+             *
+             *
+             * ** InOrder: yield return cursor.data when
+             *  popping a node from stack.
+             * 
+             */
             if (Root is not null)
             {
                 Stack<Node> stack = new();
@@ -228,68 +247,35 @@ namespace datastructures
                 }
             }
         }
-
         public IEnumerable<T> PreOrder()
         {
-            /*
-             * Basic Algorithm:
-             * Follow left nodes as far as possible,
-             * adding current node to stack when left child exists.
+            /* Basic Algorithm:
              * 
-             * Continue until no left child exists,
-             * then pop a node from the stack to check for a right node.
+             * Same as InOrder for traversal.
              * 
-             * If right node exists, repeat above steps for going down
-             * as far left as possible.
-             * 
-             * Finished when stack is empty and current node has no
-             * right child.
+             * ** PreOrder: yield return cursor.data when
+             * pushing a node onto stack.
              * 
              */
-            if(Root is not null)
+            if (Root is not null)
             {
-                Node? cursor = Root;
-                Node? lChild = cursor.children[Node.LEFT];
-                Node? rChild = cursor.children[Node.RIGHT];
                 Stack<Node> stack = new();
-
-                while(cursor is not null)
+                Node? cursor = Root;
+                while (cursor is not null)
                 {
                     yield return cursor.data;
-                    //go left if possible
-                    if(cursor.children[Node.LEFT] is not null)
+                    stack.Push(cursor);
+                    cursor = cursor.children[Node.LEFT];
+                }
+                while(stack.Count > 0)
+                {
+                    cursor = stack.Pop();
+                    cursor = cursor.children[Node.RIGHT];
+                    while(cursor is not null)
                     {
-                        //save this node for checking right nodes later
+                        yield return cursor.data;
                         stack.Push(cursor);
                         cursor = cursor.children[Node.LEFT];
-                    }
-                    //can't go left, try going right
-                    else
-                    {
-                        //check if cursor has a right node
-                        if(cursor.children[Node.RIGHT] is not null)
-                        {
-                            cursor = cursor.children[Node.RIGHT];
-                        }
-                        //cursor does not have a right node, so pop a node to try again
-                        else
-                        {
-                            //pop a node until we find a right node
-                            while(cursor.children[Node.RIGHT] is null && stack.Count > 0)
-                            {
-                                cursor = stack.Pop();
-                            }
-                            //we found a node
-                            if (cursor.children[Node.RIGHT] is not null)
-                            {
-                                cursor = cursor.children[Node.RIGHT];
-                            }
-                            //no more nodes to check
-                            else
-                            {
-                                break;
-                            }
-                        }
                     }
                 }
             }
