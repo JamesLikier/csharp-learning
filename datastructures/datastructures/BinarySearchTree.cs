@@ -280,5 +280,36 @@ namespace datastructures
                 }
             }
         }
+        public IEnumerable<T> BreadthFirst()
+        {
+            /* Basic Algorithm:
+             * 
+             * create queue and add root.
+             * 
+             * while queue has nodes:
+             * yield return cursor.data
+             * add children to queue.
+             *
+             * finished when queue is empty
+             */
+
+            if (Root is not null)
+            {
+                Node cursor = Root;
+                Queue<Node> queue = new();
+                queue.Add(cursor);
+                Node? lChild = null;
+                Node? rChild = null;
+                while(queue.Count > 0)
+                {
+                    cursor = queue.Remove();
+                    yield return cursor.Data;
+                    lChild = cursor.children[Node.LEFT];
+                    rChild = cursor.children[Node.RIGHT];
+                    if(lChild is not null) queue.Add(lChild);
+                    if(rChild is not null) queue.Add(rChild);
+                }
+            }
+        }
     }
 }
