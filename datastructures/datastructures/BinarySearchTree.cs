@@ -303,7 +303,7 @@ namespace datastructures
                 while(queue.Count > 0)
                 {
                     cursor = queue.Remove();
-                    yield return cursor.Data;
+                    yield return cursor.data;
                     lChild = cursor.children[Node.LEFT];
                     rChild = cursor.children[Node.RIGHT];
                     if(lChild is not null) queue.Add(lChild);
