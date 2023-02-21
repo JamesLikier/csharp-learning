@@ -1,31 +1,34 @@
 namespace datastructures
 {
-    public class BinarySearchTree<T>
+    public class BinarySearchTree<TKey,TVal>
     {
-        private class Node
+        protected class Node
         {
-            public T data;
-            public Node? parent;
-            public Node?[] children;
-            public const int LEFT = 0;
-            public const int RIGHT = 1;
+            public TKey Key;
+            public TVal Value;
+            public Node? Parent;
+            public Node? Left;
+            public Node? Right;
 
-            public Node(T data, Node? parent, Node? lChild, Node? rChild)
+            public Node(TKey key, TVal value) : this(key, value, null)
             {
-                this.data = data;
-                this.parent = parent;
-                this.children = new Node?[2];
-                this.children[Node.LEFT] = lChild;
-                this.children[Node.RIGHT] = rChild;
+            }
+            public Node(TKey key, TVal value, Node? parent)
+            {
+                this.Key = key;
+                this.Value = value;
+                this.Parent = parent;
+                this.Left = null;
+                this.Right = null;
             }
         }
-        private Node? Root;
-        private int _count;
+        protected Node? Root;
+        protected int _count;
         public int Count { get { return _count; } }
-        private Comparer<T> _comparer;
-        private class DefaultComparer : Comparer<T>
+        protected Comparer<TKey> _comparer;
+        protected class DefaultComparer : Comparer<TKey>
         {
-            public override int Compare(T? x, T? y)
+            public override int Compare(TKey? x, TKey? y)
             {
                 if (x is null) throw new ArgumentException("x is null");
                 if (y is null) throw new ArgumentException("y is null");
@@ -36,19 +39,19 @@ namespace datastructures
         public BinarySearchTree() : this(new DefaultComparer())
         {
         }
-        public BinarySearchTree(Comparer<T> comparer)
+        public BinarySearchTree(Comparer<TKey> comparer)
         {
             this.Root = null;
             this._count = 0;
             this._comparer = comparer;
         }
 
-        public void Add(T data)
+        public void Add(TKey key, TVal value)
         {
             //empty tree
             if (Root is null)
             {
-                Root = new Node(data, null, null, null);
+                Root = new(key,value);
                 _count++;
             }
             //not empty
@@ -59,28 +62,28 @@ namespace datastructures
                 while (true)
                 {
                     parent = current;
-                    int weight = this._comparer.Compare(data, parent.data);
+                    int weight = this._comparer.Compare(key, current.Key);
                     //duplicate already inserted
                     if (weight == 0) return;
                     //go left
                     if (weight < 0)
                     {
-                        current = current.children[Node.LEFT];
+                        current = current.Left;
                         //insert left
                         if (current is null)
                         {
-                            parent.children[Node.LEFT] = new Node(data, parent, null, null);
+                            parent.Left = new(key,value,parent);
                             break;
                         }
                     }
                     //go right
                     else
                     {
-                        current = current.children[Node.RIGHT];
+                        current = current.Right;
                         //insert right
                         if (current is null)
                         {
-                            parent.children[Node.RIGHT] = new Node(data, parent, null, null);
+                            parent.Right = new(key,value,parent);
                             break;
                         }
                     }
@@ -88,45 +91,42 @@ namespace datastructures
                 _count++;
             }
         }
-        private Node? FindNode(T data)
+        protected Node? FindNode(TKey key)
         {
             if (Root is null) return null;
             Node? current = Root;
-            while (true)
+            while (current is not null)
             {
-                int weight = this._comparer.Compare(data, current.data);
+                int weight = this._comparer.Compare(key, current.Key);
                 //found node
                 if (weight == 0) return current;
                 //go left
                 if (weight < 0)
                 {
-                    current = current.children[Node.LEFT];
-                    if (current is null) return null;
+                    current = current.Left;
                 }
                 //go right
                 else
                 {
-                    current = current.children[Node.RIGHT];
-                    if (current is null) return null;
+                    current = current.Right;
                 }
             }
+            return null;
         }
 
-        public bool Remove(T data)
+        public bool Remove(TKey key)
         {
-            Node? n = FindNode(data);
-            //didn't find data
+            Node? n = FindNode(key);
+            //didn't find key
             if (n is null) return false;
-            Node? parent = n.parent;
-            Node? rChild = n.children[Node.RIGHT];
-            Node? lChild = n.children[Node.LEFT];
+
             //no children
-            if (lChild is null && rChild is null)
+            if (n.Left is null && n.Right is null)
             {
                 this.RemoveNoChild(n);
             }
             //one child 
-            else if (lChild is not null ^ rChild is not null)
+            else if (n.Left is not null ^ n.Right is not null)
             {
                 this.RemoveOneChild(n);
             }
@@ -134,8 +134,9 @@ namespace datastructures
             else
             {
                 //find in-order successor
-                Node? current = rChild;
-                while (current is not null && current.children[Node.LEFT] is not null) current = current.children[Node.LEFT];
+                Node? successor = n.Right;
+                while(successor is not null && successor.Left is not null) successor = successor.Left;
+                //TODO
                 n.data = current!.data;
                 Node? cChild = current.children[Node.LEFT] ?? current.children[Node.RIGHT];
                 if(cChild is null)
@@ -150,7 +151,7 @@ namespace datastructures
             _count--;
             return true;
         }
-        private void RemoveNoChild(Node n)
+        protected void RemoveNoChild(Node n)
         {
             Node? parent = n.parent;
             //root node
@@ -173,7 +174,7 @@ namespace datastructures
                 }
             }
         }
-        private void RemoveOneChild(Node n)
+        protected void RemoveOneChild(Node n)
         {
             Node? parent = n.parent;
             Node child = n.children[Node.LEFT] ?? n.children[Node.RIGHT]!;
