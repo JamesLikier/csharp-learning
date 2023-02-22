@@ -137,9 +137,9 @@ namespace datastructures
                 Node? successor = n.Right;
                 while(successor is not null && successor.Left is not null) successor = successor.Left;
                 //TODO
-                n.data = current!.data;
-                Node? cChild = current.children[Node.LEFT] ?? current.children[Node.RIGHT];
-                if(cChild is null)
+                n.Key = successor.Key;
+                n.Value = successor.Value;
+                if(successor.Right is null)
                 {
                     RemoveNoChild(current);
                 }
@@ -153,26 +153,17 @@ namespace datastructures
         }
         protected void RemoveNoChild(Node n)
         {
-            Node? parent = n.parent;
             //root node
-            if (parent is null)
+            if (n.Parent is null)
             {
                 this.Root = null;
+                return;
             }
-            else
-            {
-                int weight = this._comparer.Compare(n.data, parent.data);
-                //chop parent left child
-                if (weight < 0)
-                {
-                    parent.children[Node.LEFT] = null;
-                }
-                //chop parent right child
-                else
-                {
-                    parent.children[Node.RIGHT] = null;
-                }
-            }
+            int weight = this._comparer.Compare(n.Key, n.Parent.Key);
+            //chop parent left child
+            if (weight < 0) n.Parent.Left = null;
+            //chop parent right child
+            if (weight > 0) n.Parent.Right = null;
         }
         protected void RemoveOneChild(Node n)
         {
