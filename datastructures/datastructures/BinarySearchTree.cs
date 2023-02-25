@@ -46,6 +46,34 @@ namespace datastructures
             this._comparer = comparer;
         }
 
+        protected void Add(TKey key, TVal value, Node n)
+        {
+            int weight = _comparer.Compare(key, n.Key);
+            if(weight < 0)
+            {
+                if(n.Left is null)
+                {
+                    n.Left = new(key,value,n);
+                    _count++;
+                }
+                else
+                {
+                    Add(key,value,n.Left);
+                }
+            }
+            else if(weight > 0)
+            {
+                if(n.Right is null)
+                {
+                    n.Right = new(key,value,n);
+                    _count++;
+                }
+                else
+                {
+                    Add(key,value,n.Right);
+                }
+            }
+        }
         public void Add(TKey key, TVal value)
         {
             //empty tree
@@ -57,38 +85,7 @@ namespace datastructures
             //not empty
             else
             {
-                Node? current = Root;
-                Node? parent = null;
-                while (true)
-                {
-                    parent = current;
-                    int weight = this._comparer.Compare(key, current.Key);
-                    //duplicate already inserted
-                    if (weight == 0) return;
-                    //go left
-                    if (weight < 0)
-                    {
-                        current = current.Left;
-                        //insert left
-                        if (current is null)
-                        {
-                            parent.Left = new(key,value,parent);
-                            break;
-                        }
-                    }
-                    //go right
-                    else
-                    {
-                        current = current.Right;
-                        //insert right
-                        if (current is null)
-                        {
-                            parent.Right = new(key,value,parent);
-                            break;
-                        }
-                    }
-                }
-                _count++;
+                Add(key,value,Root);
             }
         }
         protected Node? FindNode(TKey key)
@@ -114,6 +111,18 @@ namespace datastructures
             return null;
         }
 
+        protected bool Remove(TKey key, Node? n)
+        {
+            if(n is null) return false;
+            int weight = _comparer.Compare(key, n.Key);
+            // we found our node to remove
+            if(weight == 0)
+            {
+            }
+            else if (weight < 0)
+            {
+            }
+        }
         public bool Remove(TKey key)
         {
             Node? n = FindNode(key);
