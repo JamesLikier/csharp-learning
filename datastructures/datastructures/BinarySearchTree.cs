@@ -88,76 +88,41 @@ namespace datastructures
                 Add(key,value,Root);
             }
         }
-        protected Node? FindNode(TKey key)
+        protected Node? FindNode(TKey key, Node? n)
         {
-            if (Root is null) return null;
-            Node? current = Root;
-            while (current is not null)
-            {
-                int weight = this._comparer.Compare(key, current.Key);
-                //found node
-                if (weight == 0) return current;
-                //go left
-                if (weight < 0)
-                {
-                    current = current.Left;
-                }
-                //go right
-                else
-                {
-                    current = current.Right;
-                }
-            }
-            return null;
-        }
+            // we ran out of nodes to search
+            if(n is null) return null;
 
-        protected bool Remove(TKey key, Node? n)
-        {
-            if(n is null) return false;
             int weight = _comparer.Compare(key, n.Key);
-            // we found our node to remove
+            // we found our node 
             if(weight == 0)
             {
+                return n;
             }
+            // key is less than n.Key
             else if (weight < 0)
             {
+                return FindNode(key, n.Left);
             }
-        }
-        public bool Remove(TKey key)
-        {
-            Node? n = FindNode(key);
-            //didn't find key
-            if (n is null) return false;
-
-            //no children
-            if (n.Left is null && n.Right is null)
-            {
-                this.RemoveNoChild(n);
-            }
-            //one child 
-            else if (n.Left is not null ^ n.Right is not null)
-            {
-                this.RemoveOneChild(n);
-            }
-            //two children
+            // key is greater than n.Key
             else
             {
-                //find in-order successor
-                Node? successor = n.Right;
-                while(successor is not null && successor.Left is not null) successor = successor.Left;
-                //TODO
-                n.Key = successor.Key;
-                n.Value = successor.Value;
-                if(successor.Right is null)
-                {
-                    RemoveNoChild(current);
-                }
-                else
-                {
-                    RemoveOneChild(current);
-                }
-            }
-            _count--;
+                return FindNode(key, n.Right);
+            }    
+        }
+        protected Node? FurthestLeft(Node? n)
+        {
+            if (n is null || n.Left is null) return n;
+            return FurthestLeft(n.Left);
+        }
+
+        public bool Remove(TKey key)
+        {
+            Node? n = FindNode(key, Root);
+            //did not find node
+            if (n is null) return false;
+
+            //found node
             return true;
         }
         protected void RemoveNoChild(Node n)
@@ -166,44 +131,58 @@ namespace datastructures
             if (n.Parent is null)
             {
                 this.Root = null;
+                this._count--;
                 return;
             }
+
             int weight = this._comparer.Compare(n.Key, n.Parent.Key);
             //chop parent left child
             if (weight < 0) n.Parent.Left = null;
             //chop parent right child
             if (weight > 0) n.Parent.Right = null;
+            this._count--;
         }
         protected void RemoveOneChild(Node n)
         {
-            Node? parent = n.parent;
-            Node child = n.children[Node.LEFT] ?? n.children[Node.RIGHT]!;
+            Node child = n.Left ?? n.Right!;
+            Node? parent = n.Parent;
+
+            //root node
             if (parent is null)
             {
                 this.Root = child;
-                this.Root.parent = null;
+                child.Parent = null;
+                this._count--;
+                return;
+            }
+
+            //not root
+            int weight = this._comparer.Compare(child.Key, parent.Key);
+            //left side
+            if(weight < 0)
+            {
+                parent.Left = child;
             }
             else
             {
-                int weight = this._comparer.Compare(n.data, parent.data);
-                if (weight < 0)
-                {
-                    parent.children[Node.LEFT] = child;
-                }
-                else
-                {
-                    parent.children[Node.RIGHT] = child;
-                }
-                child.parent = parent;
+                parent.Right = child;
             }
+            child.Parent = parent;
+            this._count--;
+        }
+        protected void RemoveTwoChild(Node n)
+        {
+            Node? successor = FurthestLeft(n.Right);
+            Node? parent = n.Parent;
+            //TODO
         }
 
-        public bool Contains(T data)
+        public bool Contains(TKey key)
         {
-            return FindNode(data) is not null;
+            return FindNode(key, Root) is not null;
         }
-        
-        public IEnumerable<T> InOrder()
+
+        public IEnumerable<TVal> InOrder()
         {
             /*
              * Basic Algorithm:
