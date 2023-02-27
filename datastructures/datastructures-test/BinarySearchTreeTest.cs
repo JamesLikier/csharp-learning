@@ -20,16 +20,16 @@
          *         1                        19
          *                                18
          */
-        public ds.BinarySearchTree<int> CreateTree()
+        public ds.BinarySearchTree<int,int> CreateTree()
         {
-            ds.BinarySearchTree<int> bst = new();
-            foreach (int i in nums) bst.Add(i);
+            ds.BinarySearchTree<int,int> bst = new();
+            foreach (int i in nums) bst.Add(i,i);
             return bst;
         }
         [TestMethod]
         public void AddTest()
         {
-            BinarySearchTree<int> bst = CreateTree();
+            BinarySearchTree<int,int> bst = CreateTree();
             Assert.AreEqual(nums.Length, bst.Count);
             int[] preorder = bst.PreOrder().ToArray();
             Assert.IsTrue(preorder.SequenceEqual(numsPreOrder));
@@ -37,7 +37,7 @@
         [TestMethod]
         public void RemoveTest()
         {
-            BinarySearchTree<int> bst = CreateTree();
+            BinarySearchTree<int,int> bst = CreateTree();
 
             Assert.IsFalse(bst.Remove(-1));
             //remove childless left node
@@ -59,19 +59,19 @@
         [TestMethod]
         public void BreadthFirstTest()
         {
-            BinarySearchTree<int> bst = CreateTree();
+            BinarySearchTree<int,int> bst = CreateTree();
             Assert.IsTrue(bst.BreadthFirst().ToArray().SequenceEqual(numsBreadthFirst));
         }
         [TestMethod]
         public void PreOrderTest()
         {
-            BinarySearchTree<int> bst = CreateTree();
+            BinarySearchTree<int,int> bst = CreateTree();
             Assert.IsTrue(bst.PreOrder().ToArray().SequenceEqual(numsPreOrder));
         }
         [TestMethod]
         public void InOrderTest()
         {
-            BinarySearchTree<int> bst = CreateTree();
+            BinarySearchTree<int,int> bst = CreateTree();
             Assert.IsTrue(bst.InOrder().ToArray().SequenceEqual(numsInOrder));
         }
     }

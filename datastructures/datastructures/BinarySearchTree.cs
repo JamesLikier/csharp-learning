@@ -118,11 +118,29 @@ namespace datastructures
 
         public bool Remove(TKey key)
         {
+            Console.WriteLine("finding node");
             Node? n = FindNode(key, Root);
             //did not find node
             if (n is null) return false;
 
             //found node
+            if(n.Left is null && n.Right is null)
+            {
+                Console.WriteLine("no children");
+                RemoveNoChild(n);
+            }
+            else if(n.Left is null ^ n.Right is null)
+            {
+                Console.WriteLine("one child");
+                RemoveOneChild(n);
+            }
+            else
+            {
+                Console.WriteLine("two children");
+                RemoveTwoChild(n);
+            }
+            _count--;
+            Console.WriteLine("removed");
             return true;
         }
         protected void RemoveNoChild(Node n)
@@ -131,7 +149,6 @@ namespace datastructures
             if (n.Parent is null)
             {
                 this.Root = null;
-                this._count--;
                 return;
             }
 
@@ -140,7 +157,6 @@ namespace datastructures
             if (weight < 0) n.Parent.Left = null;
             //chop parent right child
             if (weight > 0) n.Parent.Right = null;
-            this._count--;
         }
         protected void RemoveOneChild(Node n)
         {
@@ -152,7 +168,6 @@ namespace datastructures
             {
                 this.Root = child;
                 child.Parent = null;
-                this._count--;
                 return;
             }
 
@@ -168,13 +183,37 @@ namespace datastructures
                 parent.Right = child;
             }
             child.Parent = parent;
-            this._count--;
         }
         protected void RemoveTwoChild(Node n)
         {
             Node? successor = FurthestLeft(n.Right);
             Node? parent = n.Parent;
-            //TODO
+
+            //check for successor children to handle
+            //*only have to swap successor children if successor != n.Right
+            if (successor != n.Right && successor!.Right is not null)
+            {
+                successor.Right.Parent = successor.Parent;
+                successor.Parent!.Left = successor.Right;
+            }
+
+            //reassign parent and children of n to successor
+            successor!.Parent = parent;
+            successor.Right = n.Right;
+            successor.Left = n.Left;
+
+            //assign parent child if parent is not null
+            if(parent is not null)
+            {
+                if(parent.Left == n)
+                {
+                    parent.Left = successor;
+                }
+                else
+                {
+                    parent.Right = successor;
+                }
+            }
         }
 
         public bool Contains(TKey key)
@@ -211,23 +250,23 @@ namespace datastructures
                 while (cursor is not null)
                 {
                     stack.Push(cursor);
-                    cursor = cursor.children[Node.LEFT];
+                    cursor = cursor.Left;
                 }
                 while(stack.Count > 0)
                 {
                     cursor = stack.Pop();
-                    yield return cursor.data;
+                    yield return cursor.Value;
                     //go right once, then add all left nodes
-                    cursor = cursor.children[Node.RIGHT];
+                    cursor = cursor.Right;
                     while(cursor is not null)
                     {
                         stack.Push(cursor);
-                        cursor = cursor.children[Node.LEFT];
+                        cursor = cursor.Left;
                     }
                 }
             }
         }
-        public IEnumerable<T> PreOrder()
+        public IEnumerable<TVal> PreOrder()
         {
             /* Basic Algorithm:
              * 
@@ -243,24 +282,24 @@ namespace datastructures
                 Node? cursor = Root;
                 while (cursor is not null)
                 {
-                    yield return cursor.data;
+                    yield return cursor.Value;
                     stack.Push(cursor);
-                    cursor = cursor.children[Node.LEFT];
+                    cursor = cursor.Left;
                 }
                 while(stack.Count > 0)
                 {
                     cursor = stack.Pop();
-                    cursor = cursor.children[Node.RIGHT];
+                    cursor = cursor.Right;
                     while(cursor is not null)
                     {
-                        yield return cursor.data;
+                        yield return cursor.Value;
                         stack.Push(cursor);
-                        cursor = cursor.children[Node.LEFT];
+                        cursor = cursor.Left;
                     }
                 }
             }
         }
-        public IEnumerable<T> BreadthFirst()
+        public IEnumerable<TVal> BreadthFirst()
         {
             /* Basic Algorithm:
              * 
@@ -283,9 +322,9 @@ namespace datastructures
                 while(queue.Count > 0)
                 {
                     cursor = queue.Remove();
-                    yield return cursor.data;
-                    lChild = cursor.children[Node.LEFT];
-                    rChild = cursor.children[Node.RIGHT];
+                    yield return cursor.Value;
+                    lChild = cursor.Left;
+                    rChild = cursor.Right;
                     if(lChild is not null) queue.Add(lChild);
                     if(rChild is not null) queue.Add(rChild);
                 }
