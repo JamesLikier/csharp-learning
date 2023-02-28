@@ -118,7 +118,6 @@ namespace datastructures
 
         public bool Remove(TKey key)
         {
-            Console.WriteLine("finding node");
             Node? n = FindNode(key, Root);
             //did not find node
             if (n is null) return false;
@@ -126,21 +125,17 @@ namespace datastructures
             //found node
             if(n.Left is null && n.Right is null)
             {
-                Console.WriteLine("no children");
                 RemoveNoChild(n);
             }
             else if(n.Left is null ^ n.Right is null)
             {
-                Console.WriteLine("one child");
                 RemoveOneChild(n);
             }
             else
             {
-                Console.WriteLine("two children");
                 RemoveTwoChild(n);
             }
             _count--;
-            Console.WriteLine("removed");
             return true;
         }
         protected void RemoveNoChild(Node n)
@@ -187,32 +182,25 @@ namespace datastructures
         protected void RemoveTwoChild(Node n)
         {
             Node? successor = FurthestLeft(n.Right);
-            Node? parent = n.Parent;
 
-            //check for successor children to handle
-            //*only have to swap successor children if successor != n.Right
-            if (successor != n.Right && successor!.Right is not null)
+            //reassign successor.Right nodes
+            if (successor.Right is not null)
             {
                 successor.Right.Parent = successor.Parent;
-                successor.Parent!.Left = successor.Right;
+                if (successor.Parent.Left == successor) successor.Parent.Left = successor.Right;
+                if (successor.Parent.Right == successor) successor.Parent.Right = successor.Right;
             }
 
-            //reassign parent and children of n to successor
-            successor!.Parent = parent;
-            successor.Right = n.Right;
+            //reassign successor nodes
+            successor.Parent = n.Parent;
             successor.Left = n.Left;
+            successor.Right = n.Right;
 
-            //assign parent child if parent is not null
-            if(parent is not null)
+            //if parent is not null, reassign successor to Left or Right
+            if (n.Parent is not null)
             {
-                if(parent.Left == n)
-                {
-                    parent.Left = successor;
-                }
-                else
-                {
-                    parent.Right = successor;
-                }
+                if (n.Parent.Left == n) n.Parent.Left = successor;
+                if (n.Parent.Right == n) n.Parent.Right = successor;
             }
         }
 
