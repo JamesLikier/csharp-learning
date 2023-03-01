@@ -185,6 +185,7 @@ namespace datastructures
         {
             Node? successor = FurthestLeft(n.Right);
 
+
             //reassign successor.Right nodes
             if (successor.Right is not null)
             {
@@ -196,7 +197,7 @@ namespace datastructures
             //reassign successor nodes
             successor.Parent = n.Parent;
             successor.Left = n.Left;
-            successor.Right = n.Right;
+            //successor.Right = n.Right;
 
             //if parent is not null, reassign successor to Left or Right
             if (n.Parent is not null)
