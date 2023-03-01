@@ -89,8 +89,6 @@ namespace datastructures
             }
         }
         
-        //FindNode needs to be optimized.
-        //currently it will search further than necessary.
         protected Node? FindNode(TKey key, Node? n)
         {
             // we ran out of nodes to search
