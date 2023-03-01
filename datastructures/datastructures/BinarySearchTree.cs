@@ -88,6 +88,9 @@ namespace datastructures
                 Add(key,value,Root);
             }
         }
+        
+        //FindNode needs to be optimized.
+        //currently it will search further than necessary.
         protected Node? FindNode(TKey key, Node? n)
         {
             // we ran out of nodes to search
@@ -162,20 +165,21 @@ namespace datastructures
             if (parent is null)
             {
                 this.Root = child;
-                child.Parent = null;
-                return;
             }
-
             //not root
-            int weight = this._comparer.Compare(child.Key, parent.Key);
-            //left side
-            if(weight < 0)
-            {
-                parent.Left = child;
-            }
             else
             {
-                parent.Right = child;
+                int weight = this._comparer.Compare(child.Key, parent.Key);
+                //left side
+                if(weight < 0)
+                {
+                    parent.Left = child;
+                }
+                //right side
+                else
+                {
+                    parent.Right = child;
+                }
             }
             child.Parent = parent;
         }
