@@ -34,27 +34,35 @@
             int[] preorder = bst.PreOrder().ToArray();
             Assert.IsTrue(preorder.SequenceEqual(numsPreOrder));
         }
+        public delegate bool RemoveAndCount(int i);
         [TestMethod]
         public void RemoveTest()
         {
-            BinarySearchTree<int,int> bst = CreateTree();
+            BinarySearchTree<int, int> bst = CreateTree();
+            int removeCount = 0;
+            RemoveAndCount rac = i => { bool r = bst.Remove(i); if (r) removeCount++; return r; };
 
-            Assert.IsFalse(bst.Remove(-1));
+            Assert.IsFalse(rac(-1));
             //remove childless left node
-            Assert.IsTrue(bst.Remove(1));
+            Assert.IsTrue(rac(1));
+            Assert.IsTrue(bst.PreOrder().ToArray() is [ 10, 5, 3, 2, 4, 6, 7, 15, 14, 17, 16, 20, 19, 18 ]);
             //remove childless right node
-            Assert.IsTrue(bst.Remove(7));
+            Assert.IsTrue(rac(7));
+            Assert.IsTrue(bst.PreOrder().ToArray() is [ 10, 5, 3, 2, 4, 6, 15, 14, 17, 16, 20, 19, 18 ]);
             //remove node with 1 child
-            Assert.IsTrue(bst.Remove(19));
+            Assert.IsTrue(rac(19));
+            Assert.IsTrue(bst.PreOrder().ToArray() is [ 10, 5, 3, 2, 4, 6, 15, 14, 17, 16, 20, 18 ]);
             //remove node with 2 children
-            Assert.IsTrue(bst.Remove(3));
-            //remove root node with 2 children
-            Assert.IsTrue(bst.Remove(10));
+            Assert.IsTrue(rac(3));
+            Assert.IsTrue(bst.PreOrder().ToArray() is [ 10, 5, 4, 2, 6, 15, 14, 17, 16, 20, 18 ]);
+            //remove root node with 2 children, successor no children
+            Assert.IsTrue(rac(10));
+            Assert.IsTrue(bst.PreOrder().ToArray() is [ 14, 5, 4, 2, 6, 15, 17, 16, 20, 18 ]);
+            //remove root node with 2 children, successor with child
+            Assert.IsTrue(rac(14));
+            Assert.IsTrue(bst.PreOrder().ToArray() is [ 15, 5, 4, 2, 6, 17, 16, 20, 18 ]);
 
-            int[] preorder = (bst.PreOrder()).ToArray();
-
-            Assert.AreEqual(nums.Length-5, bst.Count);
-            Assert.IsTrue(preorder is [14, 5, 4, 2, 6, 15, 17, 16, 20, 18]);
+            Assert.AreEqual(nums.Length-removeCount, bst.Count);
         }
         [TestMethod]
         public void BreadthFirstTest()

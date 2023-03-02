@@ -174,37 +174,40 @@ namespace datastructures
         {
             Node? successor = FurthestLeft(n.Right);
 
-            //reassign successor.parent.child to null
-            if (successor.Parent.Left == successor) successor.Parent.Left = null;
-            if (successor.Parent.Right == successor) successor.Parent.Right = null;
-
-            //reassign Root if needed
-            if (Root == n)
-            {
-                Root = successor;
-            }
-            //reassign parent.child
-            else
-            {
-                if (n.Parent.Left == n) n.Parent.Left = successor;
-                if (n.Parent.Right == n) n.Parent.Right = successor;
-            }
-            
-            //reassign successor.Right nodes
+            //if successor has right child, point to successor.parent
             if (successor.Right is not null)
             {
                 successor.Right.Parent = successor.Parent;
                 if (successor.Parent.Left == successor) successor.Parent.Left = successor.Right;
                 if (successor.Parent.Right == successor) successor.Parent.Right = successor.Right;
             }
+            //no child, reassign successor.parent.child to null
+            else
+            {
+                if (successor.Parent.Left == successor) successor.Parent.Left = null;
+                if (successor.Parent.Right == successor) successor.Parent.Right = null;
+            }
 
-            //reassign successor nodes
+            //reassign Root if needed
+            if (Root == n)
+            {
+                Root = successor;
+            }
+            //not Root, reassign parent.child to successor
+            else
+            {
+                if (n.Parent.Left == n) n.Parent.Left = successor;
+                if (n.Parent.Right == n) n.Parent.Right = successor;
+            }
+            
+            //if n has children, set their parent to successor
             if (n.Left is not null) n.Left.Parent = successor;
             if (n.Right is not null) n.Right.Parent = successor;
+
+            //reassign successor.parent and successor.child nodes
             successor.Parent = n.Parent;
             successor.Left = n.Left;
             successor.Right = n.Right;
-
         }
 
         public bool Contains(TKey key)
