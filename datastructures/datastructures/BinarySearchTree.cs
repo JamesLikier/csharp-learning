@@ -142,17 +142,15 @@ namespace datastructures
         protected void RemoveNoChild(Node n)
         {
             //root node
-            if (n.Parent is null)
+            if (Root == n)
             {
                 this.Root = null;
                 return;
             }
 
-            int weight = this._comparer.Compare(n.Key, n.Parent.Key);
-            //chop parent left child
-            if (weight < 0) n.Parent.Left = null;
-            //chop parent right child
-            if (weight > 0) n.Parent.Right = null;
+            //chop parent.child
+            if (n.Parent.Left == n) n.Parent.Left = null;
+            if (n.Parent.Right == n) n.Parent.Right = null;
         }
         protected void RemoveOneChild(Node n)
         {
@@ -160,30 +158,37 @@ namespace datastructures
             Node? parent = n.Parent;
 
             //root node
-            if (parent is null)
+            if (Root == n)
             {
                 this.Root = child;
             }
             //not root
             else
             {
-                int weight = this._comparer.Compare(child.Key, parent.Key);
-                //left side
-                if(weight < 0)
-                {
-                    parent.Left = child;
-                }
-                //right side
-                else
-                {
-                    parent.Right = child;
-                }
+                if (parent.Left == n) parent.Left = child;
+                if (parent.Right == n) parent.Right = child;
             }
             child.Parent = parent;
         }
         protected void RemoveTwoChild(Node n)
         {
             Node? successor = FurthestLeft(n.Right);
+
+            //reassign successor.parent.child to null
+            if (successor.Parent.Left == successor) successor.Parent.Left = null;
+            if (successor.Parent.Right == successor) successor.Parent.Right = null;
+
+            //reassign Root if needed
+            if (Root == n)
+            {
+                Root = successor;
+            }
+            //reassign parent.child
+            else
+            {
+                if (n.Parent.Left == n) n.Parent.Left = successor;
+                if (n.Parent.Right == n) n.Parent.Right = successor;
+            }
             
             //reassign successor.Right nodes
             if (successor.Right is not null)
@@ -200,15 +205,6 @@ namespace datastructures
             successor.Left = n.Left;
             successor.Right = n.Right;
 
-            //if parent is not null, reassign successor to Left or Right
-            if (n.Parent is not null)
-            {
-                if (n.Parent.Left == n) n.Parent.Left = successor;
-                if (n.Parent.Right == n) n.Parent.Right = successor;
-            }
-
-            //reassign Root if needed
-            if (Root == n) Root = successor;
         }
 
         public bool Contains(TKey key)
