@@ -184,7 +184,7 @@ namespace datastructures
         protected void RemoveTwoChild(Node n)
         {
             Node? successor = FurthestLeft(n.Right);
-
+            
             //reassign successor.Right nodes
             if (successor.Right is not null)
             {
@@ -194,6 +194,8 @@ namespace datastructures
             }
 
             //reassign successor nodes
+            if (n.Left is not null) n.Left.Parent = successor;
+            if (n.Right is not null) n.Right.Parent = successor;
             successor.Parent = n.Parent;
             successor.Left = n.Left;
             successor.Right = n.Right;
