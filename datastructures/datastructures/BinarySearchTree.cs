@@ -1,30 +1,7 @@
 namespace datastructures
 {
-    public class BinarySearchTree<TKey,TVal>
+    public class BinarySearchTree<TKey, TVal> : BinaryTree<TKey, TVal>
     {
-        protected class Node
-        {
-            public TKey Key;
-            public TVal Value;
-            public Node? Parent;
-            public Node? Left;
-            public Node? Right;
-
-            public Node(TKey key, TVal value) : this(key, value, null)
-            {
-            }
-            public Node(TKey key, TVal value, Node? parent)
-            {
-                this.Key = key;
-                this.Value = value;
-                this.Parent = parent;
-                this.Left = null;
-                this.Right = null;
-            }
-        }
-        protected Node? Root;
-        protected int _count;
-        public int Count { get { return _count; } }
         protected Comparer<TKey> _comparer;
         protected class DefaultComparer : Comparer<TKey>
         {
@@ -49,28 +26,28 @@ namespace datastructures
         protected void Add(TKey key, TVal value, Node n)
         {
             int weight = _comparer.Compare(key, n.Key);
-            if(weight < 0)
+            if (weight < 0)
             {
-                if(n.Left is null)
+                if (n.Left is null)
                 {
-                    n.Left = new(key,value,n);
+                    n.Left = new(key, value, n);
                     _count++;
                 }
                 else
                 {
-                    Add(key,value,n.Left);
+                    Add(key, value, n.Left);
                 }
             }
-            else if(weight > 0)
+            else if (weight > 0)
             {
-                if(n.Right is null)
+                if (n.Right is null)
                 {
-                    n.Right = new(key,value,n);
+                    n.Right = new(key, value, n);
                     _count++;
                 }
                 else
                 {
-                    Add(key,value,n.Right);
+                    Add(key, value, n.Right);
                 }
             }
         }
@@ -79,24 +56,24 @@ namespace datastructures
             //empty tree
             if (Root is null)
             {
-                Root = new(key,value);
+                Root = new(key, value);
                 _count++;
             }
             //not empty
             else
             {
-                Add(key,value,Root);
+                Add(key, value, Root);
             }
         }
-        
+
         protected Node? FindNode(TKey key, Node? n)
         {
             // we ran out of nodes to search
-            if(n is null) return null;
+            if (n is null) return null;
 
             int weight = _comparer.Compare(key, n.Key);
             // we found our node 
-            if(weight == 0)
+            if (weight == 0)
             {
                 return n;
             }
@@ -109,12 +86,7 @@ namespace datastructures
             else
             {
                 return FindNode(key, n.Right);
-            }    
-        }
-        protected Node? FurthestLeft(Node? n)
-        {
-            if (n is null || n.Left is null) return n;
-            return FurthestLeft(n.Left);
+            }
         }
 
         public bool Remove(TKey key)
@@ -124,11 +96,11 @@ namespace datastructures
             if (n is null) return false;
 
             //found node
-            if(n.Left is null && n.Right is null)
+            if (n.Left is null && n.Right is null)
             {
                 RemoveNoChild(n);
             }
-            else if(n.Left is null ^ n.Right is null)
+            else if (n.Left is null ^ n.Right is null)
             {
                 RemoveOneChild(n);
             }
@@ -144,13 +116,14 @@ namespace datastructures
             //root node
             if (Root == n)
             {
-                this.Root = null;
-                return;
+                ReassignRoot(null);
             }
-
             //chop parent.child
-            if (n.Parent.Left == n) n.Parent.Left = null;
-            if (n.Parent.Right == n) n.Parent.Right = null;
+            else if (n.Parent is not null)
+            {
+                if (n.Parent.Left == n) n.Parent.Left = null;
+                if (n.Parent.Right == n) n.Parent.Right = null;
+            }
         }
         protected void RemoveOneChild(Node n)
         {
@@ -160,29 +133,27 @@ namespace datastructures
             //root node
             if (Root == n)
             {
-                this.Root = child;
+                ReassignRoot(child);
             }
-            //not root
-            else
+            else if (parent is not null)
             {
-                if (parent.Left == n) parent.Left = child;
-                if (parent.Right == n) parent.Right = child;
+                if (parent.Left == n) ReassignLeft(parent, child);
+                if (parent.Right == n) ReassignRight(parent, child);
             }
-            child.Parent = parent;
         }
         protected void RemoveTwoChild(Node n)
         {
             Node? successor = FurthestLeft(n.Right);
+            if (successor is null) return;
 
             //if successor has right child, point to successor.parent
-            if (successor.Right is not null)
+            if (successor.Right is not null && successor.Parent is not null)
             {
-                successor.Right.Parent = successor.Parent;
-                if (successor.Parent.Left == successor) successor.Parent.Left = successor.Right;
-                if (successor.Parent.Right == successor) successor.Parent.Right = successor.Right;
+                if (successor.Parent.Left == successor) ReassignLeft(successor.Parent, successor.Right);
+                if (successor.Parent.Right == successor) ReassignRight(successor.Parent, successor.Right);
             }
             //no child, reassign successor.parent.child to null
-            else
+            else if (successor.Parent is not null)
             {
                 if (successor.Parent.Left == successor) successor.Parent.Left = null;
                 if (successor.Parent.Right == successor) successor.Parent.Right = null;
@@ -191,23 +162,17 @@ namespace datastructures
             //reassign Root if needed
             if (Root == n)
             {
-                Root = successor;
+                ReassignRoot(successor);
             }
             //not Root, reassign parent.child to successor
-            else
+            else if (n.Parent is not null)
             {
-                if (n.Parent.Left == n) n.Parent.Left = successor;
-                if (n.Parent.Right == n) n.Parent.Right = successor;
+                if (n.Parent.Left == n) ReassignLeft(n.Parent, successor);
+                if (n.Parent.Right == n) ReassignRight(n.Parent, successor);
             }
-            
-            //if n has children, set their parent to successor
-            if (n.Left is not null) n.Left.Parent = successor;
-            if (n.Right is not null) n.Right.Parent = successor;
 
-            //reassign successor.parent and successor.child nodes
-            successor.Parent = n.Parent;
-            successor.Left = n.Left;
-            successor.Right = n.Right;
+            //assign n.child to successor
+            ReassignLeftRight(successor, n.Left, n.Right);
         }
 
         public bool Contains(TKey key)
@@ -246,81 +211,17 @@ namespace datastructures
                     stack.Push(cursor);
                     cursor = cursor.Left;
                 }
-                while(stack.Count > 0)
+                while (stack.Count > 0)
                 {
                     cursor = stack.Pop();
                     yield return cursor.Value;
                     //go right once, then add all left nodes
                     cursor = cursor.Right;
-                    while(cursor is not null)
+                    while (cursor is not null)
                     {
                         stack.Push(cursor);
                         cursor = cursor.Left;
                     }
-                }
-            }
-        }
-        public IEnumerable<TVal> PreOrder()
-        {
-            /* Basic Algorithm:
-             * 
-             * Same as InOrder for traversal.
-             * 
-             * ** PreOrder: yield return cursor.data when
-             * pushing a node onto stack.
-             * 
-             */
-            if (Root is not null)
-            {
-                Stack<Node> stack = new();
-                Node? cursor = Root;
-                while (cursor is not null)
-                {
-                    yield return cursor.Value;
-                    stack.Push(cursor);
-                    cursor = cursor.Left;
-                }
-                while(stack.Count > 0)
-                {
-                    cursor = stack.Pop();
-                    cursor = cursor.Right;
-                    while(cursor is not null)
-                    {
-                        yield return cursor.Value;
-                        stack.Push(cursor);
-                        cursor = cursor.Left;
-                    }
-                }
-            }
-        }
-        public IEnumerable<TVal> BreadthFirst()
-        {
-            /* Basic Algorithm:
-             * 
-             * create queue and add root.
-             * 
-             * while queue has nodes:
-             * yield return cursor.data
-             * add children to queue.
-             *
-             * finished when queue is empty
-             */
-
-            if (Root is not null)
-            {
-                Node cursor = Root;
-                Queue<Node> queue = new();
-                queue.Add(cursor);
-                Node? lChild = null;
-                Node? rChild = null;
-                while(queue.Count > 0)
-                {
-                    cursor = queue.Remove();
-                    yield return cursor.Value;
-                    lChild = cursor.Left;
-                    rChild = cursor.Right;
-                    if(lChild is not null) queue.Add(lChild);
-                    if(rChild is not null) queue.Add(rChild);
                 }
             }
         }
