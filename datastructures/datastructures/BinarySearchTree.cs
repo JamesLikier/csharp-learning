@@ -23,47 +23,49 @@ namespace datastructures
             this._comparer = comparer;
         }
 
-        protected void Add(TKey key, TVal value, Node n)
+        protected void Add(Node root, Node n)
         {
-            int weight = _comparer.Compare(key, n.Key);
+            int weight = _comparer.Compare(n.key, root.key);
             if (weight < 0)
             {
-                if (n.Left is null)
+                if (root.Left is null)
                 {
-                    n.Left = new(key, value, n);
-                    _count++;
+                    root.Left = n;
+                    n.Parent = root;
                 }
                 else
                 {
-                    Add(key, value, n.Left);
+                    Add(root.Left, n);
                 }
             }
             else if (weight > 0)
             {
-                if (n.Right is null)
+                if (root.Right is null)
                 {
-                    n.Right = new(key, value, n);
-                    _count++;
+                    root.Right = n;
+                    n.Parent = root;
                 }
                 else
                 {
-                    Add(key, value, n.Right);
+                    Add(root.Right, n);
                 }
             }
         }
-        public void Add(TKey key, TVal value)
+        protected void Add(Node n)
         {
-            //empty tree
             if (Root is null)
             {
-                Root = new(key, value);
-                _count++;
+                Root = n;
             }
-            //not empty
             else
             {
-                Add(key, value, Root);
+                Add(Root, n);
             }
+            _count++;
+        }
+        public void Add(TKey key, TVal value)
+        {
+            Add(new Node(key,value));
         }
 
         protected Node? FindNode(TKey key, Node? n)

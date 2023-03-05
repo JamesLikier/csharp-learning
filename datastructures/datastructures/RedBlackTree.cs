@@ -15,5 +15,11 @@ namespace datastructures
                 Color = RED;
             }
         }
+
+        new public void Add(TKey key, TVal value)
+        {
+            Add(new RBTNode(key,value));
+            //todo
+        }
     }
 }
