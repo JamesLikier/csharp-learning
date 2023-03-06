@@ -25,7 +25,7 @@ namespace datastructures
 
         protected void Add(Node root, Node n)
         {
-            int weight = _comparer.Compare(n.key, root.key);
+            int weight = _comparer.Compare(n.Key, root.Key);
             if (weight < 0)
             {
                 if (root.Left is null)

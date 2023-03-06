@@ -2,11 +2,11 @@ namespace datastructures
 {
     public class RedBlackTree<TKey, TVal> : BinarySearchTree<TKey, TVal>
     {
-        protected class RBTNode : BinaryTree.Node
+        protected class RBTNode : BinaryTree<TKey,TVal>.Node
         {
             public int Color;
-            public const RED = 0;
-            public const BLACK = 1;
+            public const int RED = 0;
+            public const int BLACK = 1;
             public RBTNode(TKey key, TVal value) : this(key,value,null)
             {
             }
@@ -22,7 +22,7 @@ namespace datastructures
             Add(new RBTNode(key,value));
             
             //find freshly added node
-            RBTNode n = FindNode(key);
+            RBTNode? n = (RBTNode?)FindNode(key, Root);
 
             //todo
         }

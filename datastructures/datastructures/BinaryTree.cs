@@ -45,7 +45,7 @@
         {
             Rotate(LEFT);
         }
-        protected void RotateLeft(Node subRoot)
+        protected void RotateLeftOLD(Node subRoot)
         {
             Node? parent = subRoot.Parent;
             Node? rightChild = subRoot.Right;
