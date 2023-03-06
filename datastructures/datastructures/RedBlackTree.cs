@@ -18,7 +18,12 @@ namespace datastructures
 
         new public void Add(TKey key, TVal value)
         {
+            //add to tree like a BST
             Add(new RBTNode(key,value));
+            
+            //find freshly added node
+            RBTNode n = FindNode(key);
+
             //todo
         }
     }

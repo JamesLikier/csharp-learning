@@ -32,6 +32,47 @@
             this._count = 0;
         }
 
+        protected const int LEFT = 0;
+        protected const int RIGHT = 1;
+        protected void Rotate(int direction)
+        {
+        }
+        protected void RotateRight(Node subRoot)
+        {
+            Rotate(RIGHT);
+        }
+        protected void RotateLeft(Node subRoot)
+        {
+            Rotate(LEFT);
+        }
+        protected void RotateLeft(Node subRoot)
+        {
+            Node? parent = subRoot.Parent;
+            Node? rightChild = subRoot.Right;
+            Node? leftChild = subRoot.Left;
+
+            //rightChild.Left and subRoot assignment
+            subRoot.Right = rightChild.Left;
+            if(rightChild.Left is not null) rightChild.Left.Parent = subRoot;
+
+            //subRoot and rightChild assignment
+            subRoot.Parent = rightChild;
+            rightChild.Left = subRoot;
+
+            //parent and rightChild assignment
+            if(parent is not null)
+            {
+                if (parent.Left == subRoot) parent.Left = rightChild;
+                if (parent.Right == subRoot) parent.Right = rightChild;
+            }
+            //we have root node
+            else
+            {
+                Root = rightChild;
+            }
+            rightChild.Parent = parent;
+        }
+
         protected void ReassignLeft(Node? parent, Node? left)
         {
             if (parent is not null) parent.Left = left;
