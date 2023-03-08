@@ -34,43 +34,49 @@
 
         protected const int LEFT = 0;
         protected const int RIGHT = 1;
-        protected void Rotate(int direction)
+        protected void Rotate(Node subRoot, int direction)
         {
+            Node? parent = subRoot.Parent;
+            Node? odChild;
+            if (direction == LEFT)
+            {
+                odChild = subRoot.Right;
+            }
+            else
+            {
+                odChild = subRoot.Left;
+            }
+
+            if (odChild is null) throw new NullReferenceException("Rotate: Child node is null.");
+
+            //new subRoot parent and child relationship
+            if (parent is not null && parent.Left == subRoot) ReassignLeft(parent, odChild);
+            if (parent is not null && parent.Right == subRoot) ReassignRight(parent, odChild);
+
+            //new od.child and orig subRoot relationship
+            if (direction == LEFT) ReassignRight(subRoot, odChild.Left);
+            if (direction == RIGHT) ReassignLeft(subRoot, odChild.Right);
+
+            //new subRoot and orig subRoot relationship
+            if (direction == LEFT)
+            {
+                ReassignLeft(odChild, subRoot);
+            }
+            else
+            {
+                ReassignRight(odChild , subRoot);
+            }
+
+            //re-establish Root if needed
+            if (Root == subRoot) ReassignRoot(odChild);
         }
         protected void RotateRight(Node subRoot)
         {
-            Rotate(RIGHT);
+            Rotate(subRoot, RIGHT);
         }
         protected void RotateLeft(Node subRoot)
         {
-            Rotate(LEFT);
-        }
-        protected void RotateLeftOLD(Node subRoot)
-        {
-            Node? parent = subRoot.Parent;
-            Node? rightChild = subRoot.Right;
-            Node? leftChild = subRoot.Left;
-
-            //rightChild.Left and subRoot assignment
-            subRoot.Right = rightChild.Left;
-            if(rightChild.Left is not null) rightChild.Left.Parent = subRoot;
-
-            //subRoot and rightChild assignment
-            subRoot.Parent = rightChild;
-            rightChild.Left = subRoot;
-
-            //parent and rightChild assignment
-            if(parent is not null)
-            {
-                if (parent.Left == subRoot) parent.Left = rightChild;
-                if (parent.Right == subRoot) parent.Right = rightChild;
-            }
-            //we have root node
-            else
-            {
-                Root = rightChild;
-            }
-            rightChild.Parent = parent;
+            Rotate(subRoot, LEFT);
         }
 
         protected void ReassignLeft(Node? parent, Node? left)
