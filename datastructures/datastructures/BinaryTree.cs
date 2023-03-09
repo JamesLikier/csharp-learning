@@ -2,7 +2,7 @@
 {
     public class BinaryTree<TKey, TVal>
     {
-        protected class Node
+        public class Node
         {
             public TKey Key;
             public TVal Value;
@@ -22,7 +22,7 @@
                 this.Right = null;
             }
         }
-        protected Node? Root;
+        public Node? Root;
         protected int _count;
         public int Count { get { return _count; } }
 

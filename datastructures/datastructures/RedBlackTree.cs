@@ -2,7 +2,7 @@ namespace datastructures
 {
     public class RedBlackTree<TKey, TVal> : BinarySearchTree<TKey, TVal>
     {
-        protected class RBTNode : BinaryTree<TKey,TVal>.Node
+        public class RBTNode : BinaryTree<TKey,TVal>.Node
         {
             public int Color;
             public const int RED = 0;
