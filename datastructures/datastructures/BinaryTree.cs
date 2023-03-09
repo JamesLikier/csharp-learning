@@ -32,9 +32,9 @@
             this._count = 0;
         }
 
-        protected const int LEFT = 0;
-        protected const int RIGHT = 1;
-        protected void Rotate(Node subRoot, int direction)
+        public const int LEFT = 0;
+        public const int RIGHT = 1;
+        public void Rotate(Node subRoot, int direction)
         {
             Node? parent = subRoot.Parent;
             Node? odChild;
@@ -70,28 +70,28 @@
             //re-establish Root if needed
             if (Root == subRoot) ReassignRoot(odChild);
         }
-        protected void RotateRight(Node subRoot)
+        public void RotateRight(Node subRoot)
         {
             Rotate(subRoot, RIGHT);
         }
-        protected void RotateLeft(Node subRoot)
+        public void RotateLeft(Node subRoot)
         {
             Rotate(subRoot, LEFT);
         }
 
-        protected void ReassignLeft(Node? parent, Node? left)
+        public void ReassignLeft(Node? parent, Node? left)
         {
             if (parent is not null) parent.Left = left;
             if (left is not null) left.Parent = parent;
         }
 
-        protected void ReassignRight(Node? parent, Node? right)
+        public void ReassignRight(Node? parent, Node? right)
         {
             if (parent is not null) parent.Right = right;
             if (right is not null) right.Parent = parent;
         }
 
-        protected void ReassignLeftRight(Node parent, Node? left, Node? right)
+        public void ReassignLeftRight(Node parent, Node? left, Node? right)
         {
             parent.Left = left;
             parent.Right = right;
@@ -99,12 +99,12 @@
             if (right is not null) right.Parent = parent;
         }
 
-        protected void ReassignRoot(Node? newRoot)
+        public void ReassignRoot(Node? newRoot)
         {
             Root = newRoot;
             if (newRoot is not null) newRoot.Parent = null;
         }
-        protected Node? FurthestLeft(Node? n)
+        public Node? FurthestLeft(Node? n)
         {
             if (n is null || n.Left is null) return n;
             return FurthestLeft(n.Left);
