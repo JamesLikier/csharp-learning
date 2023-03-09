@@ -16,10 +16,8 @@ namespace datastructures
         public BinarySearchTree() : this(new DefaultComparer())
         {
         }
-        public BinarySearchTree(Comparer<TKey> comparer)
+        public BinarySearchTree(Comparer<TKey> comparer) : base()
         {
-            this.Root = null;
-            this._count = 0;
             this._comparer = comparer;
         }
 
